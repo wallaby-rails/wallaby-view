@@ -6,8 +6,6 @@ module Wallaby
   end
 end
 
-require 'wallaby/view/railtie'
-
 require 'renderers/wallaby/cell'
 require 'renderers/wallaby/cell_resolver'
 require 'renderers/wallaby/custom_lookup_context'

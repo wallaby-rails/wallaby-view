@@ -9,3 +9,4 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'wallaby-cop', path: '/wallaby-cop'
+gem 'sqlite3'

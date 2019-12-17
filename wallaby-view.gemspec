@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'rails', '>= 4.2.0'
 
-  spec.add_development_dependency 'rspec-rails'
+  spec.add_development_dependency 'minitest-spec-rails'
   spec.add_development_dependency 'wallaby-cop'
 end
