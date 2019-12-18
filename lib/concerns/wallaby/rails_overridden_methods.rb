@@ -27,7 +27,7 @@ module Wallaby
         origin_prefixes: super,
         theme_name: current_theme_name,
         resources_name: current_resources_name,
-        script_name: request.env[SCRIPT_NAME],
+        script_name: request.env['SCRIPT_NAME'],
         action_name: params[:action]
       )
     end
