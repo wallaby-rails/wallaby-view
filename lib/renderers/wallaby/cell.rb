@@ -2,7 +2,6 @@
 
 module Wallaby
   # In order to improve the rendering performance, cell is designed as simple partial component.
-  # @since 5.2.0
   class Cell
     # @!attribute [r] context
     # @return [Object] view context
@@ -84,13 +83,13 @@ module Wallaby
     # Produce output for this cell component.
     #
     # Please note that the output doesn't include the buffer produced by {#concat}.
-    # Therefore, use {#render_complete} method instead when the cell is rendered.
+    # Therefore, use {#render_to_body} method instead when the cell is rendered.
     def render; end
 
     # This method produces the complete rendered string including the buffer produced by {#concat}.
     # @return [String] output of the cell
-    def render_complete(&block)
-      @buffer = EMPTY_STRING.dup # reset buffer before rendering
+    def render_to_body(&block)
+      @buffer = View::EMPTY_STRING.dup # reset buffer before rendering
       last_part = render(&block)
       @buffer << last_part.to_s
     end
@@ -98,7 +97,7 @@ module Wallaby
     # Append string to output buffer
     # @param string [String] string to concat
     def concat(string)
-      (@buffer ||= EMPTY_STRING.dup) << string
+      (@buffer ||= View::EMPTY_STRING.dup) << string
     end
 
     # @overload at(name)
