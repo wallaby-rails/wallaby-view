@@ -38,12 +38,13 @@ module Wallaby
       # @return [String] HTML output
       def render(context, options, block)
         rendered = super
-        ModuleUtils.try_to(rendered, :body) || # Rails 6 and above
-          rendered # below Rails 6
-      rescue RenderCell => error
-        cell_class = cell_class_from error.full_path, error.partial
+        # Rails 6 and above
+        rendered = rendered.body if rendered.respond_to? :body
+        rendered
+      rescue RenderCell => e
+        cell_class = cell_class_from e.full_path, e.partial
         cell_class.new(context, options[:locals]).render_to_body(&block).tap do
-          Rails.logger.info "  Rendered [cell] #{error.full_path}"
+          Rails.logger.info "  Rendered [cell] #{e.full_path}"
         end
       end
 
@@ -57,16 +58,15 @@ module Wallaby
       # @return [String] HTML output
       def cell_class_from(full_path, partial)
         start_with = partial.virtual_path.gsub %r{/[^/]+\z}, EMPTY_STRING
-        snake_class = full_path[%r{#{start_with}.+(?=\.rb)}]
+        snake_class = full_path[/#{start_with}.+(?=\.rb)/]
         snake_class.camelize.constantize
       end
-
 
       # @param partial [ActionView::Template]
       # @return [String] cell path
       def cell_path_from(partial)
         [partial.identifier, partial.inspect].find do |path|
-          fragments = path.split COLON
+          fragments = path.split DOT
           fragments.length == 2 && fragments.last == RB
         end
       end

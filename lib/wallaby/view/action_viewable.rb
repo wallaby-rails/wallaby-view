@@ -6,7 +6,8 @@ module Wallaby
     module ActionViewable
       # Overrid {}
       def view_renderer
-        @_view_renderer ||= CustomRenderer.new(lookup_context)
+        @_view_renderer ||= # rubocop:disable Naming/MemoizedInstanceVariableName
+          CustomRenderer.new(lookup_context)
       end
 
       # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb
@@ -26,13 +27,17 @@ module Wallaby
       # - wallaby/resources/:action_prefix
       # - wallaby/resources
       # @return [Array<String>]
-      def _prefixes
-        @_prefixes ||= PrefixesBuilder.build(
-          origin_prefixes: super,
-          theme_name: current_theme_name,
-          resources_name: current_resources_name,
-          script_name: request.env['SCRIPT_NAME'],
-          action_name: params[:action]
+      def _prefixes(
+        prefixes: nil,
+        action_name: nil,
+        theme_name: nil,
+        options: {}, &block
+      )
+        @_prefixes ||= CustomPrefixes.build(
+          prefixes: prefixes || super(),
+          action_name: action_name || params[:action] || self.action_name,
+          theme_name: theme_name || current_theme_name,
+          options: options, &block
         )
       end
     end

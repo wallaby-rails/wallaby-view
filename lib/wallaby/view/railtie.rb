@@ -10,6 +10,7 @@ module Wallaby
         # and therefore, Wallaby's renderer can function properly
         app.config.paths.tap do |paths|
           next if paths['app/views'].eager_load?
+
           paths.add 'app/views', eager_load: true
         end
       end

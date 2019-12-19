@@ -4,7 +4,8 @@ module Wallaby
   module View
     # A custom lookup context that uses {Wallaby::CustomResolver} to find cell/partial
     class CustomPathSet < ::ActionView::PathSet
-      private
+      protected
+
       def typecast(paths)
         paths.map do |path|
           case path

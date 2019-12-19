@@ -28,13 +28,14 @@ module Wallaby
         #   end
         # @return [String, Symbol, nil] theme name
         def theme_name
-          @theme_name ||= ModuleUtils.try_to superclass, :theme_name
+          @theme_name ||=
+            superclass.respond_to?(:theme_name) && superclass.theme_name
         end
       end
 
       # @return [String, Symbol, nil] theme name
       def current_theme_name
-        controller_to_get __callee__, :theme_name
+        self.class.theme_name
       end
     end
   end
