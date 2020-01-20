@@ -8,6 +8,7 @@ module Wallaby
 
       class_methods do
         # @!attribute [w] theme_name
+        # Set layout and {#theme_name} at the same time.
         def theme_name=(theme_name)
           layout theme_name
           @theme_name = theme_name
@@ -31,11 +32,6 @@ module Wallaby
           @theme_name ||=
             superclass.respond_to?(:theme_name) && superclass.theme_name
         end
-      end
-
-      # @return [String, Symbol, nil] theme name
-      def current_theme_name
-        self.class.theme_name
       end
     end
   end

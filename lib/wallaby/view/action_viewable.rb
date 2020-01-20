@@ -2,12 +2,32 @@
 
 module Wallaby
   module View
-    # This is a collection of the helper methods that overrides the rails methods
+    # This module overrides Rails core methods `lookup_context` and `prefixes`
+    # to provide support for {Wallaby::Cell} lookup and rendering.
     module ActionViewable
-      # Overrid {}
-      def view_renderer
-        @_view_renderer ||= # rubocop:disable Naming/MemoizedInstanceVariableName
-          CustomRenderer.new(lookup_context)
+      extend ActiveSupport::Concern
+
+      class_methods do
+        # @!attribute [w] prefix_options
+        attr_writer :prefix_options
+
+        # @!attribute [r] prefix_options
+        # It stores the options for {#prefixes}
+        # @return [Hash] prefix options
+        def prefix_options
+          @prefix_options ||=
+            superclass.respond_to?(:prefix_options) && superclass.prefix_options || nil
+        end
+      end
+
+      # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb
+      # ActionView::ViewPaths::ClassMethods#_prefixes} to extend the
+      # @return {Wallaby::View::CustomLookupContext}
+      def lookup_context
+        @_lookup_context ||= # rubocop:disable Naming/MemoizedInstanceVariableName
+          CustomLookupContext.convert(
+            super, prefixes: _prefixes
+          )
       end
 
       # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb
@@ -31,13 +51,13 @@ module Wallaby
         prefixes: nil,
         action_name: nil,
         theme_name: nil,
-        options: {}, &block
+        options: nil, &block
       )
         @_prefixes ||= CustomPrefixes.build(
           prefixes: prefixes || super(),
           action_name: action_name || params[:action] || self.action_name,
-          theme_name: theme_name || current_theme_name,
-          options: options, &block
+          theme_name: theme_name || self.class.theme_name,
+          options: options || self.class.prefix_options, &block
         )
       end
     end

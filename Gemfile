@@ -10,5 +10,7 @@ gemspec
 
 gem 'better_errors'
 gem 'byebug'
+gem 'deep-cover'
+gem 'simplecov'
 gem 'sqlite3'
 gem 'wallaby-cop', path: '/wallaby-cop'

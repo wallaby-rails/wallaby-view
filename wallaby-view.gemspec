@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
     'LICENSE',
     'README.md'
   ]
-  spec.test_files = Dir['spec/**/*']
   spec.require_paths = ['lib']
 
   spec.add_dependency 'rails', '>= 4.2.0'

@@ -2,7 +2,7 @@
 
 module Wallaby
   module View
-    # Custom resolver
+    # Custom resolver responsible for adding support for {Wallaby::Cell} lookup.
     class CustomResolver < ActionView::OptimizedFileSystemResolver
       # for Rails 5.2 and below
       begin
@@ -26,9 +26,6 @@ module Wallaby
         def build_query(path, details)
           # NOTE: super is impacted by {#escape_entry}
           origin = super
-          is_partial = file_name = origin[%r{(?<=/\{,_\})[^/\{]+}]
-          return origin unless is_partial
-
           base_dir = origin.gsub(%r{/[^/]*\z}, EMPTY_STRING)
           locales = convert details[:locale]
           formats = convert details[:formats]
@@ -39,16 +36,19 @@ module Wallaby
 
       # for Rails 6 and above
       begin
+        # This is a hack, we need to add rb extension to the beginning to make
+        # resolver to look up {Wallaby::Cell} file at higher priority.
         def find_template_paths_from_details(path, details)
           # NOTE: this is a fix for `sort_by` inside of `super` method
           details[:handlers].unshift(:rb) if details[:handlers].try(:first) != :rb
           super
         end
 
+        # This is to extend the current expression to allow resolver to look up
+        # {Wallaby::Cell} file.
         def build_regex(path, details)
-          origin = super.source
           Regexp.new(
-            origin
+            super.source
               .gsub(%r{/\{,_\}([^/]+)\z}, '/_?\\1')
               .gsub('\\.', '[_\\.]')
               .gsub('raw|', 'rb|raw|')
@@ -56,7 +56,9 @@ module Wallaby
         end
       end
 
-      # Replace partial e.g. `/_string` with `/{,_}string`
+      # Replace partial e.g. `/_string` with `/{,_}string` so that
+      # {Wallaby::Cell} file e.g. `/string_html.rb` can be searched
+      # at high priority.
       # @param entry [String]
       # @return [String] escaped entry
       def escape_entry(entry)
@@ -68,6 +70,7 @@ module Wallaby
       # @example concat a list of values into a string
       #   convert(['html', 'csv']) # => '_html,_cvs,'
       # @param values [Array<String>]
+      # @return [String]
       def convert(values)
         (values.map { |v| "_#{v}" } << EMPTY_STRING).join COMMA
       end

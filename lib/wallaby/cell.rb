@@ -16,12 +16,45 @@ module Wallaby
     attr_reader :buffer
 
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
+    delegate :yield, :formats, to: :context
 
     # @param context [ActionView::Context] view context
     # @param local_assigns [Hash] local variables
-    def initialize(context, local_assigns)
+    def initialize(context, _locals, buffer = nil)
       @context = context
       @local_assigns = local_assigns
+      @buffer = buffer ||= ActionView::OutputBuffer.new
+      context.output_buffer ||= buffer
+    end
+
+    # @note this is a template method that can be overridden by subclasses
+    # Produce output for both the template and partial.
+    def to_render; end
+
+    # @note this is a template method that can be overridden by subclasses
+    # Produce output for the template.
+    def to_template
+      to_render
+    end
+
+    # @note this is a template method that can be overridden by subclasses
+    # Produce output for the partial.
+    def to_partial
+      to_render
+    end
+
+    # Produce output for the template.
+    # @return [ActionView::OutputBuffer]
+    def render_template(&block)
+      content = to_template(&block)
+      buffer == content ? buffer : buffer << content
+    end
+
+    # Produce output for the partial.
+    # @return [ActionView::OutputBuffer]
+    def render_partial(&block)
+      content = to_partial(&block)
+      buffer == content ? buffer : buffer << content
     end
 
     # @!attribute [r] object
@@ -77,27 +110,6 @@ module Wallaby
     # @!attribute [w] form
     def form=(form)
       local_assigns[:form] = form
-    end
-
-    # @note this is a template method that can be overridden by subclasses
-    # Produce output for this cell component.
-    #
-    # Please note that the output doesn't include the buffer produced by {#concat}.
-    # Therefore, use {#render_to_body} method instead when the cell is rendered.
-    def render; end
-
-    # This method produces the complete rendered string including the buffer produced by {#concat}.
-    # @return [String] output of the cell
-    def render_to_body(&block)
-      @buffer = View::EMPTY_STRING.dup # reset buffer before rendering
-      last_part = render(&block)
-      @buffer << last_part.to_s
-    end
-
-    # Append string to output buffer
-    # @param string [String] string to concat
-    def concat(string)
-      (@buffer ||= View::EMPTY_STRING.dup) << string
     end
 
     # @overload at(name)
