@@ -20,41 +20,42 @@ module Wallaby
         end
       end
 
-      # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb
-      # ActionView::ViewPaths::ClassMethods#_prefixes} to extend the
+      # @!method original_lookup_context
+      #   Alias method for the original
+      #   {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L97 lookup_context}
+      #   @return [ActionView::LookupContext]
+
+      # @!method original_prefixes
+      #   Alias method for the original
+      #   {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
+      #   @return [Array<String>]
+
+      # Override
+      # {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L97 lookup_context}
+      # to extend the functionality so that {Wallaby::Cell} file can be discovered.
       # @return {Wallaby::View::CustomLookupContext}
-      def lookup_context
+      def override_lookup_context
         @_lookup_context ||= # rubocop:disable Naming/MemoizedInstanceVariableName
-          CustomLookupContext.convert(
-            super, prefixes: _prefixes
-          )
+          CustomLookupContext.convert(original_lookup_context, prefixes: _prefixes)
       end
 
-      # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb
-      # ActionView::ViewPaths::ClassMethods#_prefixes} to extend the prefixes for **ActionView::ViewPaths** to look up
-      # in below precedence from high to low:
+      # TODO: need to think about how to make this extensible.
       #
-      # - :mounted_path/:resources_name/:action_prefix (e.g. `admin/products/index`)
-      # - :mounted_path/:resources_name (e.g. `admin/products`)
-      # - :controller_path/:action_prefix
-      # - :controller_path
-      # - :parent_controller_path/:action_prefix
-      # - :parent_controller_path
-      # - :more_parent_controller_path/:action_prefix
-      # - :more_parent_controller_path
-      # - :theme_name/:action_prefix
-      # - :theme_name
-      # - wallaby/resources/:action_prefix
-      # - wallaby/resources
+      # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
+      # to allow other prefixes (e.g. `action_name`, `theme_name`) to be added to the prefixes list:
+      # @param prefixes [Array<String>] the base prefixes
+      # @param action_name [String] the action name to add to the prefixes list
+      # @param theme_name [String] the theme name to add to the prefixes list
+      # @param options [Hash] the options for {Wallaby::View::CustomPrefixes}
       # @return [Array<String>]
-      def _prefixes(
+      def override_prefixes(
         prefixes: nil,
         action_name: nil,
         theme_name: nil,
         options: nil, &block
       )
-        @_prefixes ||= CustomPrefixes.build(
-          prefixes: prefixes || super(),
+        @_prefixes ||= CustomPrefixes.build( # rubocop:disable Naming/MemoizedInstanceVariableName
+          prefixes: prefixes || original_prefixes,
           action_name: action_name || params[:action] || self.action_name,
           theme_name: theme_name || self.class.theme_name,
           options: options || self.class.prefix_options, &block

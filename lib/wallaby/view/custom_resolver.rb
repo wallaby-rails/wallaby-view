@@ -4,9 +4,9 @@ module Wallaby
   module View
     # Custom resolver responsible for adding support for {Wallaby::Cell} lookup.
     class CustomResolver < ActionView::OptimizedFileSystemResolver
-      # for Rails 5.2 and below
+      # @note for Rails 5.2 and below
       begin
-        # A cell query looks like:
+        # A cell query looks like the following:
         #
         # ```
         # app/views/wallaby/resources/index/integer{_en,}{_html,}.rb
@@ -18,6 +18,9 @@ module Wallaby
         # {app/views/wallaby/resources/index/integer{_en,}{_html,}.rb,
         # app/views/wallaby/resources/index/_integer{.en,}{.html,}{.erb,}}
         # ```
+        #
+        # Then when {Wallaby::View::CustomResolver} does the lookup, it will return
+        # the {Wallaby::Cell} template before anything else.
         # @param path [String]
         # @param details [Hash]
         #   see {https://api.rubyonrails.org/classes/ActionView/LookupContext/ViewPaths.html#method-i-detail_args_for
@@ -34,10 +37,15 @@ module Wallaby
         end
       end
 
-      # for Rails 6 and above
+      # @note for Rails 6 and above
       begin
-        # This is a hack, we need to add rb extension to the beginning to make
-        # resolver to look up {Wallaby::Cell} file at higher priority.
+        # This is a hack, we need to add rb extension to the beginning
+        # of handlers list to make {Wallaby::View::CustomResolver}
+        # to look up {Wallaby::Cell} file at higher precedence.
+        # @param path [String]
+        # @param details [Hash]
+        #   see {https://api.rubyonrails.org/classes/ActionView/LookupContext/ViewPaths.html#method-i-detail_args_for
+        #   Detials from ViewPaths}
         def find_template_paths_from_details(path, details)
           # NOTE: this is a fix for `sort_by` inside of `super` method
           details[:handlers].unshift(:rb) if details[:handlers].try(:first) != :rb
@@ -46,6 +54,10 @@ module Wallaby
 
         # This is to extend the current expression to allow resolver to look up
         # {Wallaby::Cell} file.
+        # @param path [String]
+        # @param details [Hash]
+        #   see {https://api.rubyonrails.org/classes/ActionView/LookupContext/ViewPaths.html#method-i-detail_args_for
+        #   Detials from ViewPaths}
         def build_regex(path, details)
           Regexp.new(
             super.source
@@ -58,7 +70,7 @@ module Wallaby
 
       # Replace partial e.g. `/_string` with `/{,_}string` so that
       # {Wallaby::Cell} file e.g. `/string_html.rb` can be searched
-      # at high priority.
+      # at higher precedence.
       # @param entry [String]
       # @return [String] escaped entry
       def escape_entry(entry)

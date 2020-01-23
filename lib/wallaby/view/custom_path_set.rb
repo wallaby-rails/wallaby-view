@@ -2,13 +2,19 @@
 
 module Wallaby
   module View
-    # Custom path set to convert the found {Wallaby::Cell} template
-    # to {Wallaby::View::CustomTemplate}
+    # Custom path set to convert the found template for {Wallaby::Cell}
+    # into a {Wallaby::View::CustomTemplate}.
     class CustomPathSet < ::ActionView::PathSet
-      # Find template as usual, but then convert the template
-      # into {Wallaby::View::CustomTemplate} for {Wallaby::Cell}
-      # @param args [Array]
-      # @return [ActiveView::Template,Wallaby::View::CustomTemplate]
+      # Find template as usual, but only convert the found template for {Wallaby::Cell}
+      # into a {Wallaby::View::CustomTemplate}.
+      # @overload find(name, prefixes = [], partial = false, keys = [], options = {})
+      #   @param name [String] name of the template/partial/{Wallaby::Cell}
+      #   @param prefixes [Array<String>]
+      #   @param partial [true, false]
+      #   @param keys [Array<String, Symbol>] keys of the locals variables
+      #   @param options [Hash] options for the lookup
+      #   @return [ActiveView::Template,Wallaby::View::CustomTemplate]
+      #   @see ActionView::LookupContext#find
       def find(*args)
         super.try do |template|
           cell_class = cell_class_from template
@@ -20,8 +26,8 @@ module Wallaby
 
       protected
 
-      # Try to find out the {Wallaby::Cell} class
-      # from the `identifier` and `inspect` of ActionView::Template
+      # Check if the given template is a {Wallaby::Cell} or not
+      # from the `identifier` and `inspect` values.
       # @param template [ActionView::Template]
       # @return [String] {Wallaby::Cell} class
       def cell_class_from(template)

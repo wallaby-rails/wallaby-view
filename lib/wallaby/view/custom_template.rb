@@ -2,13 +2,13 @@
 
 module Wallaby
   module View
-    # Custom template for {Wallaby::Cell}
+    # Custom template for {Wallaby::Cell} file.
     class CustomTemplate < ::ActionView::Template
       # @!attribute cell_class
       #   @return [Class] a Class inheriting from {Wallaby::Cell}
       attr_accessor :cell_class
       # @!attribute partial
-      #   @return [true, false, nil] a flag to see if it's a {Wallaby::Cell} partial
+      #   @return [true, false] a flag to see if it's a partial or not
       attr_accessor :partial
 
       # Convert a template to {Wallaby::View::CustomTemplate} instance
@@ -31,11 +31,10 @@ module Wallaby
 
       # Render {Wallaby::Cell} template/partial.
       #
-      # For a {Wallaby::Cell} template, it will apply {Wallaby::Cell#to_template} for rendering.
+      # - For a {Wallaby::Cell} template, it will use {Wallaby::Cell#to_template} for rendering.
+      # - For a {Wallaby::Cell} partial, it will use {Wallaby::Cell#to_partial} for rendering.
       #
-      # For a {Wallaby::Cell} partial, it will apply {Wallaby::Cell#to_partial} for rendering.
-      #
-      # Otherwise, {Wallaby::Cell#to_render} will work for both {Wallaby::Cell} template and partial.
+      # Otherwise, {Wallaby::Cell#to_render} can be used for both {Wallaby::Cell} template and partial.
       # @param view [ActionView::LookupContext]
       # @param locals [Hash]
       # @param buffer [ActionView::OutputBuffer]
