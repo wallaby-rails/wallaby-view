@@ -25,8 +25,7 @@ Rails.application.routes.draw do
   end
 
   resource :format, only: [] do
-    get 'cell_template_without_html_suffix'
-    get 'cell_partial_without_html_suffix'
+    get 'cell_template_cell_partial_without_html_suffix'
   end
 
   resource :absolute, only: [] do

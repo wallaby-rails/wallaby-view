@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Wallaby
-  # In order to improve the rendering performance, cell is designed as simple partial component.
+  # A Cell template/partial is a Ruby view object.
   class Cell
     # @!attribute [r] context
     # @return [Object] view context
@@ -46,36 +46,42 @@ module Wallaby
 
     # @note this is a template method that can be overridden by subclasses
     # Produce output for both the template and partial.
+    # @return [ActionView::OutputBuffer, String]
     def to_render; end
 
     # @note this is a template method that can be overridden by subclasses
     # Produce output for the template.
+    # @return [ActionView::OutputBuffer, String]
     def to_template
       to_render
     end
 
     # @note this is a template method that can be overridden by subclasses
     # Produce output for the partial.
+    # @return [ActionView::OutputBuffer, String]
     def to_partial
       to_render
     end
 
-    # @see [ActionView::Base#render]
+    # Override the original render method to ensure to copy
+    # instance variables back to view {#context}
+    # @return [ActionView::OutputBuffer, String]
+    # @see ActionView::Base#render
     def render(*args)
       copy_instance_variables_to(context)
       super
     end
 
-    # Produce output for the template.
-    # @return [ActionView::OutputBuffer]
+    # Produce output for the {Wallaby::Cell} template.
+    # @return [ActionView::OutputBuffer, String]
     def render_template(&block)
       content = to_template(&block)
       copy_instance_variables_to(context)
       buffer == content ? buffer : buffer << content
     end
 
-    # Produce output for the partial.
-    # @return [ActionView::OutputBuffer]
+    # Produce output for the {Wallaby::Cell} partial.
+    # @return [ActionView::OutputBuffer, String]
     def render_partial(&block)
       content = to_partial(&block)
       copy_instance_variables_to(context)
@@ -84,15 +90,21 @@ module Wallaby
 
     private
 
+    # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
     def copy_instance_variables_from(context)
-      (context.instance_variables - internal_variables).each do |variable|
-        instance_variable_set variable, context.instance_variable_get(variable)
+      context.assigns.each do |key, value|
+        symbol = :"@#{key}"
+        next if internal_variables.include? symbol
+
+        instance_variable_set symbol, value
       end
     end
 
+    # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
     def copy_instance_variables_to(context)
-      (instance_variables - internal_variables).each do |variable|
-        context.instance_variable_set variable, instance_variable_get(variable)
+      (instance_variables - internal_variables).each do |symbol|
+        key = symbol.to_s[1..-1]
+        context.assigns[key] = instance_variable_get symbol
       end
     end
 
