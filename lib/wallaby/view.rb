@@ -43,6 +43,7 @@ module Wallaby
     EMPTY_STRING = ''
     DOT_RB = '.rb'
     SLASH = '/'
+    EQUAL = '='
 
     include ActionViewable
     include Themeable

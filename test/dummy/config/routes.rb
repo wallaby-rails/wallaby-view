@@ -15,7 +15,8 @@ Rails.application.routes.draw do
   end
 
   resource :locals, only: [] do
-    get 'locals'
+    get 'cell_template_cell_partial'
+    get 'cell_template_assignment'
   end
 
   resource :instance_variable, only: [] do

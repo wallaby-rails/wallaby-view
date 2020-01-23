@@ -8,7 +8,7 @@ module Wallaby
     attr_reader :context
 
     # @!attribute [r] local_assigns
-    # @return [Hash] a list of local_assigns containing {#object}, {#field_name}, {#value}, {#metadata} and {#form}
+    # @return [Hash] a list of local_assigns
     attr_reader :local_assigns
 
     # @!attribute [r] buffer
@@ -18,9 +18,10 @@ module Wallaby
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
     delegate :yield, :formats, to: :context
 
-    # @param context [ActionView::Context] view context
+    # @param context [ActionView::Base] view context
     # @param local_assigns [Hash] local variables
-    def initialize(context, _locals, buffer = nil)
+    # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
+    def initialize(context, local_assigns, buffer = nil)
       @context = context
       @local_assigns = local_assigns
       @buffer = buffer ||= ActionView::OutputBuffer.new
@@ -57,61 +58,6 @@ module Wallaby
       buffer == content ? buffer : buffer << content
     end
 
-    # @!attribute [r] object
-    # @return [Object] object
-    def object
-      local_assigns[:object]
-    end
-
-    # @!attribute [w] object
-    def object=(object)
-      local_assigns[:object] = object
-    end
-
-    # @!attribute [r] field_name
-    # @return [String] field name
-    def field_name
-      local_assigns[:field_name]
-    end
-
-    # @!attribute [w] field_name
-    def field_name=(field_name)
-      local_assigns[:field_name] = field_name
-    end
-
-    # @!attribute [r] value
-    # @return [String] value
-    def value
-      local_assigns[:value]
-    end
-
-    # @!attribute [w] value
-    def value=(value)
-      local_assigns[:value] = value
-    end
-
-    # @!attribute [r] metadata
-    # @return [String] metadata
-    def metadata
-      local_assigns[:metadata]
-    end
-
-    # @!attribute [w] metadata
-    def metadata=(metadata)
-      local_assigns[:metadata] = metadata
-    end
-
-    # @!attribute [r] form
-    # @return [ActionView::Helpers::FormBuilder] form object
-    def form
-      local_assigns[:form]
-    end
-
-    # @!attribute [w] form
-    def form=(form)
-      local_assigns[:form] = form
-    end
-
     # @overload at(name)
     #   Get view instance variable value
     #   @example To get view instance variable value
@@ -135,6 +81,9 @@ module Wallaby
 
     # Delegate missing method to {#context}
     def method_missing(method_id, *args, &block)
+      return local_assigns[method_id] if local_assigns_reader?(method_id)
+      return local_assigns[method_id[0..-2]] = args.first if local_assigns_writter?(method_id)
+
       return super unless context.respond_to? method_id
 
       context.public_send method_id, *args, &block
@@ -142,7 +91,21 @@ module Wallaby
 
     # Delegate missing method check to {#context}
     def respond_to_missing?(method_id, _include_private)
-      context.respond_to?(method_id) || super
+      local_assigns_reader?(method_id) \
+        || local_assigns_writter?(method_id) \
+        || context.respond_to?(method_id) \
+        || super
+    end
+
+    # Check if the method_id is a key of {#local_assigns}
+    def local_assigns_reader?(method_id)
+      local_assigns.key?(method_id)
+    end
+
+    # Check if the method_id is a key assignment of {#local_assigns}
+    def local_assigns_writter?(method_id)
+      method_string = method_id.to_s
+      method_string.end_with?(View::EQUAL) && local_assigns.key?(method_string[0..-2])
     end
   end
 end
