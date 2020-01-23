@@ -4,7 +4,7 @@ class ApplicationTemplate < Wallaby::Cell
   end
 
   def to_render
-    file[/#{controller_name}.+/]
+    file[/(#{controller_name}|shared).+/]
   end
 
   def to_template
