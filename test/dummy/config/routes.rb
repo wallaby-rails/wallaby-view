@@ -20,7 +20,8 @@ Rails.application.routes.draw do
   end
 
   resource :instance_variable, only: [] do
-    get 'instance_variable'
+    get 'cell_template'
+    get 'cell_template_assignment'
   end
 
   resource :format, only: [] do

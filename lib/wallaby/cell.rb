@@ -5,27 +5,43 @@ module Wallaby
   class Cell
     # @!attribute [r] context
     # @return [Object] view context
-    attr_reader :context
+    def context
+      @__context
+    end
 
     # @!attribute [r] local_assigns
     # @return [Hash] a list of local_assigns
-    attr_reader :local_assigns
+    def local_assigns
+      @__local_assigns
+    end
 
     # @!attribute [r] buffer
     # @return [String] output string buffer
-    attr_reader :buffer
+    def buffer
+      @__buffer
+    end
+
+    # @!attribute [r] internal_variables
+    # @return [Array<Symbol>] internal instance variable symbol names
+    def internal_variables
+      @__variables
+    end
 
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
-    delegate :yield, :formats, to: :context
+    delegate :yield, :formats, :concat, :content_tag, :render, to: :context
 
     # @param context [ActionView::Base] view context
     # @param local_assigns [Hash] local variables
     # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
     def initialize(context, local_assigns, buffer = nil)
-      @context = context
-      @local_assigns = local_assigns
-      @buffer = buffer ||= ActionView::OutputBuffer.new
+      @__context = context
+      @__local_assigns = local_assigns
+      @__buffer = buffer ||= ActionView::OutputBuffer.new
       context.output_buffer ||= buffer
+
+      # remember the instance variables used for Cell
+      @__variables = instance_variables << :'@__variables'
+      copy_instance_variables_from(context)
     end
 
     # @note this is a template method that can be overridden by subclasses
@@ -44,10 +60,17 @@ module Wallaby
       to_render
     end
 
+    # @see [ActionView::Base#render]
+    def render(*args)
+      copy_instance_variables_to(context)
+      super
+    end
+
     # Produce output for the template.
     # @return [ActionView::OutputBuffer]
     def render_template(&block)
       content = to_template(&block)
+      copy_instance_variables_to(context)
       buffer == content ? buffer : buffer << content
     end
 
@@ -55,35 +78,28 @@ module Wallaby
     # @return [ActionView::OutputBuffer]
     def render_partial(&block)
       content = to_partial(&block)
+      copy_instance_variables_to(context)
       buffer == content ? buffer : buffer << content
     end
 
-    # @overload at(name)
-    #   Get view instance variable value
-    #   @example To get view instance variable value
-    #     at('name') # => get value of `@name` from the view
-    #   @param name [String, Symbol] view instance variable name without `@`
-    # @overload at(name, value)
-    #   Set view instance variable value
-    #   @example To set view instance variable value
-    #     at('name', value) # => set value of `@name` in the view
-    #   @param name [String, Symbol] view instance variable name without `@`
-    #   @param value [object] value
-    # @return [object] view instance variable value
-    def at(*args)
-      raise ArgumentError unless args.length.in? [1, 2]
-      return context.instance_variable_get :"@#{args.first}" if args.length == 1
+    private
 
-      context.instance_variable_set :"@#{args.first}", args.last
+    def copy_instance_variables_from(context)
+      (context.instance_variables - internal_variables).each do |variable|
+        instance_variable_set variable, context.instance_variable_get(variable)
+      end
     end
 
-    private
+    def copy_instance_variables_to(context)
+      (instance_variables - internal_variables).each do |variable|
+        context.instance_variable_set variable, instance_variable_get(variable)
+      end
+    end
 
     # Delegate missing method to {#context}
     def method_missing(method_id, *args, &block)
       return local_assigns[method_id] if local_assigns_reader?(method_id)
       return local_assigns[method_id[0..-2]] = args.first if local_assigns_writter?(method_id)
-
       return super unless context.respond_to? method_id
 
       context.public_send method_id, *args, &block
