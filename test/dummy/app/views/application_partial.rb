@@ -4,7 +4,7 @@ class ApplicationPartial < Wallaby::Cell
   end
 
   def to_render
-    file[/(#{controller_name}|shared).+/]
+    file[(file.index('app/views/') + 10)..-1]
   end
 
   def to_partial
