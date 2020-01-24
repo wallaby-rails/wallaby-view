@@ -1,2 +1,0 @@
-class ParentThemeChildrenController < ParentThemesController
-end

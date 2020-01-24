@@ -42,7 +42,7 @@ module Wallaby
           CustomLookupContext.convert(original_lookup_context, prefixes: _prefixes)
       end
 
-      # @!method _prefixes(prefixes: nil, controller_name: nil, action_name: nil, themes: nil, options: nil, &block)
+      # @!method _prefixes(prefixes: nil, controller_path: nil, action_name: nil, themes: nil, options: nil, &block)
       #   Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
       #   to allow other (e.g. {Wallaby::View::CustomPrefixes#action_name},
       #   {Wallaby::View::CustomPrefixes#themes}) to be added to the prefixes list:
@@ -53,20 +53,19 @@ module Wallaby
       #   @return [Array<String>]
 
       # @see #_prefixes
-      def override_prefixes( # rubocop:disable Metrics/ParameterLists
+      def override_prefixes(
         prefixes: nil,
-        controller_name: nil,
         action_name: nil,
         themes: nil,
         options: nil, &block
       )
-        @_prefixes ||= CustomPrefixes.execute( # rubocop:disable Naming/MemoizedInstanceVariableName
-          prefixes: prefixes || original_prefixes,
-          controller_name: controller_name || controller_path,
-          action_name: action_name || params[:action],
-          themes: themes || self.class.themes,
-          options: options || self.class.prefix_options, &block
-        )
+        @_prefixes ||= # rubocop:disable Naming/MemoizedInstanceVariableName
+          CustomPrefixes.execute(
+            prefixes: prefixes || original_prefixes,
+            action_name: action_name || params[:action],
+            themes: themes || self.class.themes,
+            options: options || self.class.prefix_options, &block
+          )
       end
     end
   end

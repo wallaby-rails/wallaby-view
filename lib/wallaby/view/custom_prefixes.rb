@@ -7,29 +7,30 @@ module Wallaby
       include ActiveModel::Model
 
       # @!attribute prefixes
+      #   @return [Array<String>]
+      #   @see Wallaby::View::ActionViewable#_prefixes
       attr_accessor :prefixes
-      # @!attribute controller_name
-      attr_accessor :controller_name
       # @!attribute action_name
+      #   @return [String]
       attr_accessor :action_name
       # @!attribute themes
+      #   @return [Array<Hash>]
+      #   @see Wallaby::View::Themeable#.themes
       attr_accessor :themes
       # @!attribute options
+      #   @return [Hash]
       attr_accessor :options
 
       # @param prefixes [Array<String>]
-      # @param controller_name [String]
       # @param action_name [String]
       # @param themes [String, nil]
       # @param options [Hash, nil]
       # @return [Array<String>]
-      def self.execute( # rubocop:disable Metrics/ParameterLists
-        prefixes:, controller_name:, action_name:,
-        themes: nil, options: nil, &block
+      def self.execute(
+        prefixes:, action_name:, themes: nil, options: nil, &block
       )
         new(
           prefixes: prefixes,
-          controller_name: controller_name,
           action_name: action_name,
           themes: themes,
           options: (options || {}).with_indifferent_access

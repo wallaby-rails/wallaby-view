@@ -28,7 +28,7 @@ module Wallaby
     end
 
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
-    delegate :yield, :formats, :concat, :content_tag, :render, to: :context
+    delegate :yield, :formats, :concat, :content_tag, to: :context
 
     # @param context [ActionView::Base] view context
     # @param local_assigns [Hash] local variables
@@ -69,7 +69,7 @@ module Wallaby
     # @see ActionView::Base#render
     def render(*args)
       copy_instance_variables_to(context)
-      super
+      context.render(*args)
     end
 
     # Produce output for the {Wallaby::Cell} template.

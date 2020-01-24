@@ -54,9 +54,10 @@ Rails.application.routes.draw do
 
   resource :parent_theme_child_theme, only: [] do
     get 'cell_layout_in_theme_two'
-    get 'cell_template_in_theme_two'
     get 'cell_template_cell_partial_in_theme_two'
     get 'cell_template_in_parent_theme'
     get 'cell_template_cell_partial_in_parent_theme'
+    get 'cell_template_in_child_theme'
+    get 'cell_template_cell_partial_in_child_theme'
   end
 end
