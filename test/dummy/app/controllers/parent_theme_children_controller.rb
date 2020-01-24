@@ -1,0 +1,2 @@
+class ParentThemeChildrenController < ParentThemesController
+end

@@ -6,31 +6,90 @@ module Wallaby
     module Themeable
       extend ActiveSupport::Concern
 
+      class << self
+        # @!attribute theme_name
+        #   The theme name is used to apply a set of theme implementation
+        #   for the frontend (html/css/javascript).
+        #
+        #   When theme name is set to e.g. `custom_theme`,
+        #   the following changes will be made:
+        #
+        #   - layout will be set to the same name `custom_theme`
+        #   - theme name will be added to the lookup prefixes
+        #     right after the controller path of where it's defined.
+        #
+        #   Once theme name is set, all its subclass controllers
+        #   will inherit the same theme name
+        #   @example To set an theme name:
+        #     class Admin::ApplicationController < ApplicationController
+        #       self.theme_name = 'secure'
+        #
+        #       def index
+        #         _prefixes
+        #         # =>
+        #         # [
+        #         #   'admin/application/index',
+        #         #   'admin/application',
+        #         #   'secure/index',
+        #         #   'secure',
+        #         #   'application/index',
+        #         #   'application'
+        #         # ]
+        #       end
+        #     end
+        #
+        #     class Admin::UsersController < Admin::ApplicationController
+        #       self.theme_name # => 'secure'
+        #     end
+        #   @return [String, nil] theme name
+
+        # @!method theme
+        #   @example Once theme is set, the metadata will be set as well:
+        #     class Admin::UsersController < ApplicationController
+        #       self.theme_name = 'secure'
+        #
+        #       self.theme
+        #       # =>
+        #       # {
+        #       #   theme_name: 'secure',
+        #       #   theme_path: 'admin/users'
+        #       # }
+        #     end
+        #   @return [Hash] theme metadata
+
+        # @!method themes
+        #   @return [Array<Hash>] a list of theme metadata
+      end
+
       class_methods do
-        # @!attribute [w] theme_name
-        # Set layout and {#theme_name} at the same time.
+        # @see {.theme_name}
         def theme_name=(theme_name)
           layout theme_name
+          @theme_path = theme_name && controller_path
           @theme_name = theme_name
         end
 
-        # @!attribute [r] theme_name
-        # The theme name is used to apply a set of frontend (html/css/javascript) implementation.
-        #
-        # When theme name is set to e.g. `custom_theme`, the following changes will be made:
-        #
-        # - layout will be set to the same name `custom_theme`
-        # - it will be added to the partial lookup prefixes right on top of `wallaby/resources` prefix.
-        #
-        # Once theme name is set, all its controller subclasses will inherit the same theme name
-        # @example To set an theme name:
-        #   class Admin::ApplicationController < Wallaby::ResourcesController
-        #     self.theme_name = 'admin_theme'
-        #   end
-        # @return [String, Symbol, nil] theme name
+        # @see {.theme_name}
         def theme_name
-          @theme_name ||=
-            superclass.respond_to?(:theme_name) && superclass.theme_name
+          @theme_name \
+            || superclass.respond_to?(:theme_name) && superclass.theme_name \
+            || nil
+        end
+
+        # @see {.theme}
+        def theme
+          @theme_name ||= nil
+          @theme_name && {
+            theme_name: @theme_name,
+            theme_path: @theme_path
+          }
+        end
+
+        # @see {.themes}
+        def themes
+          parent_themes =
+            superclass.respond_to?(:themes) && superclass.themes || []
+          [theme].concat(parent_themes).compact
         end
       end
     end

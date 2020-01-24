@@ -52,15 +52,15 @@ module Wallaby
     # @note this is a template method that can be overridden by subclasses
     # Produce output for the template.
     # @return [ActionView::OutputBuffer, String]
-    def to_template
-      to_render
+    def to_template(&block)
+      to_render(&block)
     end
 
     # @note this is a template method that can be overridden by subclasses
     # Produce output for the partial.
     # @return [ActionView::OutputBuffer, String]
-    def to_partial
-      to_render
+    def to_partial(&block)
+      to_render(&block)
     end
 
     # Override the original render method to ensure to copy

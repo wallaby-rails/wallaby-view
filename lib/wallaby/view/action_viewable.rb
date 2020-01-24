@@ -30,34 +30,41 @@ module Wallaby
       #   {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
       #   @return [Array<String>]
 
-      # Override
-      # {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L97 lookup_context}
-      # to extend the functionality so that {Wallaby::Cell} file can be discovered.
-      # @return {Wallaby::View::CustomLookupContext}
+      # @!method lookup_context
+      #   Override
+      #   {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L97 lookup_context}
+      #   to extend the functionality so that {Wallaby::Cell} file can be discovered.
+      #   @return {Wallaby::View::CustomLookupContext}
+
+      # @see #lookup_context
       def override_lookup_context
         @_lookup_context ||= # rubocop:disable Naming/MemoizedInstanceVariableName
           CustomLookupContext.convert(original_lookup_context, prefixes: _prefixes)
       end
 
-      # TODO: need to think about how to make this extensible.
-      #
-      # Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
-      # to allow other prefixes (e.g. `action_name`, `theme_name`) to be added to the prefixes list:
-      # @param prefixes [Array<String>] the base prefixes
-      # @param action_name [String] the action name to add to the prefixes list
-      # @param theme_name [String] the theme name to add to the prefixes list
-      # @param options [Hash] the options for {Wallaby::View::CustomPrefixes}
-      # @return [Array<String>]
-      def override_prefixes(
+      # @!method _prefixes(prefixes: nil, controller_name: nil, action_name: nil, themes: nil, options: nil, &block)
+      #   Override {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
+      #   to allow other (e.g. {Wallaby::View::CustomPrefixes#action_name},
+      #   {Wallaby::View::CustomPrefixes#themes}) to be added to the prefixes list:
+      #   @param prefixes [Array<String>] the base prefixes
+      #   @param action_name [String] the action name to add to the prefixes list
+      #   @param themes [String] the theme name to add to the prefixes list
+      #   @param options [Hash] the options for {Wallaby::View::CustomPrefixes}
+      #   @return [Array<String>]
+
+      # @see #_prefixes
+      def override_prefixes( # rubocop:disable Metrics/ParameterLists
         prefixes: nil,
+        controller_name: nil,
         action_name: nil,
-        theme_name: nil,
+        themes: nil,
         options: nil, &block
       )
-        @_prefixes ||= CustomPrefixes.build( # rubocop:disable Naming/MemoizedInstanceVariableName
+        @_prefixes ||= CustomPrefixes.execute( # rubocop:disable Naming/MemoizedInstanceVariableName
           prefixes: prefixes || original_prefixes,
-          action_name: action_name || params[:action] || self.action_name,
-          theme_name: theme_name || self.class.theme_name,
+          controller_name: controller_name || controller_path,
+          action_name: action_name || params[:action],
+          themes: themes || self.class.themes,
           options: options || self.class.prefix_options, &block
         )
       end
