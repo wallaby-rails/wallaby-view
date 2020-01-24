@@ -39,7 +39,7 @@ module Wallaby
           begin
             snake_class = path[/#{base_name}.+(?=\.rb)/]
             snake_class.camelize.constantize.try { |c| c < Cell && c || nil }
-          rescue NameError # rubocop:disable Lint/SuppressedException
+          rescue NameError, LoadError # rubocop:disable Lint/SuppressedException
           end
         end.find(&:presence)
       end

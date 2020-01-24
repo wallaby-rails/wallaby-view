@@ -60,4 +60,21 @@ Rails.application.routes.draw do
     get 'cell_template_in_child_theme'
     get 'cell_template_cell_partial_in_child_theme'
   end
+
+  namespace :admin, only: [] do
+    get 'display_prefixes', to: 'application#display_prefixes'
+
+    resource :user, only: [] do
+      get 'display_prefixes'
+      get 'cell_template'
+      get 'cell_template_cell_partial'
+    end
+
+    resource :user_profile, only: [] do
+      get 'display_prefixes'
+    end
+  end
+
+  resource :error, only: [] do
+  end
 end

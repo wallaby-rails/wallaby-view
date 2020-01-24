@@ -71,25 +71,27 @@ module Wallaby
 
         # @see {.theme_name}
         def theme_name
-          @theme_name \
-            || superclass.respond_to?(:theme_name) && superclass.theme_name \
-            || nil
+          @theme_name || superclass_s(:theme_name)
         end
 
         # @see {.theme}
         def theme
-          @theme_name ||= nil
           @theme_name && {
             theme_name: @theme_name,
             theme_path: @theme_path
-          }
+          } || superclass_s(:theme)
         end
 
         # @see {.themes}
         def themes
-          parent_themes =
-            superclass.respond_to?(:themes) && superclass.themes || []
-          [theme].concat(parent_themes).compact
+          parent_themes = superclass_s(:themes) || []
+          (@theme_name ? [theme] : []).concat(parent_themes).compact
+        end
+
+        private
+
+        def superclass_s(method)
+          superclass.respond_to?(method) && superclass.public_send(method) || nil
         end
       end
     end
