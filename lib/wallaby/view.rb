@@ -33,10 +33,10 @@ module Wallaby
     #       (now becomes `_prefixes`)
     # @param mod [Module]
     def self.included(mod)
-      mod.alias_method :original_lookup_context, :lookup_context
-      mod.alias_method :original_prefixes, :_prefixes
-      mod.alias_method :lookup_context, :override_lookup_context
-      mod.alias_method :_prefixes, :override_prefixes
+      mod.send :alias_method, :original_lookup_context, :lookup_context
+      mod.send :alias_method, :original_prefixes, :_prefixes
+      mod.send :alias_method, :lookup_context, :override_lookup_context
+      mod.send :alias_method, :_prefixes, :override_prefixes
     end
 
     COMMA = ','
