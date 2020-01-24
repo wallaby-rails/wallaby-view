@@ -8,9 +8,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # development dependencies will be added by default to the :development group.
 gemspec
 
+gem 'rails', '~> 6.0.0'
+
 gem 'better_errors'
 gem 'byebug'
 gem 'deep-cover'
 gem 'simplecov'
 gem 'sqlite3'
+# gem 'sqlite3', '< 1.4.0'
 gem 'wallaby-cop', path: '/wallaby-cop'

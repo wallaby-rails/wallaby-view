@@ -60,7 +60,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "dummy_production"
 
-  config.action_mailer.perform_caching = false
+  config.action_mailer.perform_caching = false if Rails::VERSION::MAJOR >= 5
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

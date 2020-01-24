@@ -29,6 +29,7 @@ module Wallaby
         def build_query(path, details)
           # NOTE: super is impacted by {#escape_entry}
           origin = super
+          file_name = origin.split('/').last.gsub(/{[^}]*}/, EMPTY_STRING)
           base_dir = origin.gsub(%r{/[^/]*\z}, EMPTY_STRING)
           locales = convert details[:locale]
           formats = convert details[:formats]

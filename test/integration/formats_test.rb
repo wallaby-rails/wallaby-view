@@ -10,7 +10,7 @@ class FormatsTest < ActionDispatch::IntegrationTest
 
   test 'renders template for json' do
     get \
-      cell_template_cell_partial_without_html_suffix_format_path,
+      cell_template_cell_partial_without_html_suffix_format_path(format: :json),
       as: :json,
       headers: {
         'ACCEPT' => 'application/json',
