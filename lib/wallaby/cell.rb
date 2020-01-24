@@ -35,13 +35,12 @@ module Wallaby
     # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
     def initialize(context, local_assigns, buffer = nil)
       @__context = context
-      @__local_assigns = local_assigns
+      @__local_assigns = local_assigns.with_indifferent_access
       @__buffer = buffer ||= ActionView::OutputBuffer.new
       context.output_buffer ||= buffer
 
       # remember the instance variables used for Cell
       @__variables = instance_variables << :'@__variables'
-      copy_instance_variables_from(context)
     end
 
     # @note this is a template method that can be overridden by subclasses
@@ -75,6 +74,7 @@ module Wallaby
     # Produce output for the {Wallaby::Cell} template.
     # @return [ActionView::OutputBuffer, String]
     def render_template(&block)
+      copy_instance_variables_from(context)
       content = to_template(&block)
       copy_instance_variables_to(context)
       buffer == content ? buffer : buffer << content
@@ -83,6 +83,7 @@ module Wallaby
     # Produce output for the {Wallaby::Cell} partial.
     # @return [ActionView::OutputBuffer, String]
     def render_partial(&block)
+      copy_instance_variables_from(context)
       content = to_partial(&block)
       copy_instance_variables_to(context)
       buffer == content ? buffer : buffer << content
@@ -111,7 +112,6 @@ module Wallaby
     # Delegate missing method to {#context}
     def method_missing(method_id, *args, &block)
       return local_assigns[method_id] if local_assigns_reader?(method_id)
-      return local_assigns[method_id[0..-2]] = args.first if local_assigns_writter?(method_id)
       return super unless context.respond_to? method_id
 
       context.public_send method_id, *args, &block
@@ -120,7 +120,6 @@ module Wallaby
     # Delegate missing method check to {#context}
     def respond_to_missing?(method_id, _include_private)
       local_assigns_reader?(method_id) \
-        || local_assigns_writter?(method_id) \
         || context.respond_to?(method_id) \
         || super
     end
@@ -128,12 +127,6 @@ module Wallaby
     # Check if the method_id is a key of {#local_assigns}
     def local_assigns_reader?(method_id)
       local_assigns.key?(method_id)
-    end
-
-    # Check if the method_id is a key assignment of {#local_assigns}
-    def local_assigns_writter?(method_id)
-      method_string = method_id.to_s
-      method_string.end_with?(View::EQUAL) && local_assigns.key?(method_string[0..-2])
     end
   end
 end

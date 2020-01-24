@@ -15,5 +15,6 @@ class LocalsTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'html body h1', 'h1 local variable'
     assert_select 'html body h1 + h2', 'changed h1 local variable'
+    assert_select 'html body h1 + h2 + h3', 'h1 local variable'
   end
 end

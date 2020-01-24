@@ -76,5 +76,6 @@ Rails.application.routes.draw do
   end
 
   resource :error, only: [] do
+    get 'unknown'
   end
 end

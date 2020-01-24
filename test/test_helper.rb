@@ -4,7 +4,7 @@ if ENV['DEEP']
 else
   # NOTE: simplecov has to stay at the top of everything else to work properly.
   require 'simplecov'
-  SimpleCov.minimum_coverage 100
+  SimpleCov.minimum_coverage 95
   SimpleCov.start 'rails' do
     add_filter 'lib/wallaby/view/version'
   end

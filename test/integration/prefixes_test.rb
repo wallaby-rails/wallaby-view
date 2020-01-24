@@ -6,12 +6,12 @@ class PrefixesTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body), [
-      "admin/application/display_prefixes",
-      "admin/application",
-      "secure/display_prefixes",
-      "secure",
-      "application/display_prefixes",
-      "application"
+      'admin/application/display_prefixes',
+      'admin/application',
+      'secure/display_prefixes',
+      'secure',
+      'application/display_prefixes',
+      'application'
     ]
   end
 
@@ -20,16 +20,16 @@ class PrefixesTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body), [
-      "admin/users/display_prefixes",
-      "admin/users",
-      "account/display_prefixes",
-      "account",
-      "admin/application/display_prefixes",
-      "admin/application",
-      "secure/display_prefixes",
-      "secure",
-      "application/display_prefixes",
-      "application"
+      'admin/users/display_prefixes',
+      'admin/users',
+      'account/display_prefixes',
+      'account',
+      'admin/application/display_prefixes',
+      'admin/application',
+      'secure/display_prefixes',
+      'secure',
+      'application/display_prefixes',
+      'application'
     ]
   end
 
@@ -38,18 +38,18 @@ class PrefixesTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body), [
-      "admin/user_profiles/display_prefixes",
-      "admin/user_profiles",
-      "admin/users/display_prefixes",
-      "admin/users",
-      "account/display_prefixes",
-      "account",
-      "admin/application/display_prefixes",
-      "admin/application",
-      "secure/display_prefixes",
-      "secure",
-      "application/display_prefixes",
-      "application"
+      'admin/user_profiles/display_prefixes',
+      'admin/user_profiles',
+      'admin/users/display_prefixes',
+      'admin/users',
+      'account/display_prefixes',
+      'account',
+      'admin/application/display_prefixes',
+      'admin/application',
+      'secure/display_prefixes',
+      'secure',
+      'application/display_prefixes',
+      'application'
     ]
   end
 end
