@@ -19,8 +19,8 @@ module Wallaby
       def self.convert(template, cell_class, partial)
         new(
           template.source, template.identifier, template.handler,
-          format: template.formats.first,
-          variant: template.variants.first,
+          format: template.send(:format),
+          variant: template.send(:variant),
           locals: template.locals,
           virtual_path: template.virtual_path
         ).tap do |new_template|
@@ -40,14 +40,23 @@ module Wallaby
       # @param buffer [ActionView::OutputBuffer]
       # @return [ActionView::OutputBuffer]
       def render(view, locals, buffer = ActionView::OutputBuffer.new, &block)
-        p = proc do
-          cell = cell_class.new view, locals, buffer
+        instrument('!render_template') do
+          cell = cached_cell view, locals, buffer
           partial ? cell.render_partial(&block) : cell.render_template(&block)
         end
-
-        respond_to?(:instrument_render_template) ? instrument_render_template(&p) : instrument('!render_template', &p)
       rescue StandardError => e
         handle_render_error(view, e)
+      end
+
+      protected
+
+      def cached_cell(view, locals, buffer)
+        if defined?(@cached_cell)
+          @cached_cell.update view, locals, buffer
+        else
+          @cached_cell = cell_class.new view, locals, buffer
+        end
+        @cached_cell
       end
     end
   end

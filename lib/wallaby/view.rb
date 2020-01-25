@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'active_model'
+require 'action_mailer'
+
 require 'wallaby/view/railtie'
 require 'wallaby/view/action_viewable'
 require 'wallaby/view/themeable'

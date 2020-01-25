@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   end
 
   resource :instance_variable, only: [] do
+    get 'template_assignment'
     get 'cell_template'
     get 'cell_template_assignment'
   end
@@ -77,5 +78,10 @@ Rails.application.routes.draw do
 
   resource :error, only: [] do
     get 'unknown'
+  end
+
+  resource :collection, only: [] do
+    get 'array_partial'
+    get 'cell_array_cell_partial'
   end
 end

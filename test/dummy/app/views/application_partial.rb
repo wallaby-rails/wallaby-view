@@ -4,7 +4,7 @@ class ApplicationPartial < Wallaby::Cell
   end
 
   def to_render
-    file[(file.index('app/views/') + 10)..-1]
+    file[%r{(?<=app/views/).+}]
   end
 
   def to_partial

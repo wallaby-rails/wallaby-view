@@ -3,6 +3,18 @@
 module Wallaby
   # A Cell template/partial is a Ruby view object.
   class Cell
+    VARIABLES = %i(
+      @__context
+      @__local_assigns
+      @__buffer
+    ).freeze
+
+    KEYS = %w(
+      __context
+      __local_assigns
+      __buffer
+    ).freeze
+
     # @!attribute [r] context
     # @return [Object] view context
     def context
@@ -21,12 +33,6 @@ module Wallaby
       @__buffer
     end
 
-    # @!attribute [r] internal_variables
-    # @return [Array<Symbol>] internal instance variable symbol names
-    def internal_variables
-      @__variables
-    end
-
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
     delegate :yield, :formats, :concat, :content_tag, to: :context
 
@@ -34,13 +40,17 @@ module Wallaby
     # @param local_assigns [Hash] local variables
     # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
     def initialize(context, local_assigns, buffer = nil)
+      update context, local_assigns, buffer
+    end
+
+    # @param context [ActionView::Base] view context
+    # @param local_assigns [Hash] local variables
+    # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
+    def update(context, local_assigns, buffer = nil)
       @__context = context
-      @__local_assigns = local_assigns.with_indifferent_access
+      @__local_assigns = local_assigns
       @__buffer = buffer ||= ActionView::OutputBuffer.new
       context.output_buffer ||= buffer
-
-      # remember the instance variables used for Cell
-      @__variables = instance_variables << :'@__variables'
     end
 
     # @note this is a template method that can be overridden by subclasses
@@ -94,18 +104,18 @@ module Wallaby
     # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
     def copy_instance_variables_from(context)
       context.assigns.each do |key, value|
-        symbol = :"@#{key}"
-        next if internal_variables.include? symbol
+        next if KEYS.include? key
 
-        instance_variable_set symbol, value
+        instance_variable_set :"@#{key}", value
       end
     end
 
     # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
     def copy_instance_variables_to(context)
-      (instance_variables - internal_variables).each do |symbol|
-        key = symbol.to_s[1..-1]
-        context.assigns[key] = instance_variable_get symbol
+      instance_variables.each do |symbol|
+        next if VARIABLES.include? symbol
+
+        context.assigns[symbol.to_s[1..-1]] = remove_instance_variable symbol
       end
     end
 

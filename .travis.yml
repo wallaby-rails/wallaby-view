@@ -12,8 +12,8 @@ gemfile:
   - gemfiles/Gemfile.rails-6.0
 matrix:
   exclude:
-  - rvm: 2.6
-    gemfile: gemfiles/Gemfile.rails-4.2
+  - rvm: 2.4
+    gemfile: gemfiles/Gemfile.rails-6.0
 env:
   global:
     - CC_TEST_REPORTER_ID=9ddd85ddd2d59e4eddd860b45d5416283463d27ef531ef901051c2960697208b

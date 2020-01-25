@@ -4,6 +4,31 @@ module Wallaby
   module View
     # Custom resolver responsible for adding support for {Wallaby::Cell} lookup.
     class CustomResolver < ActionView::OptimizedFileSystemResolver
+      protected
+
+      # Find template as usual, but only convert the found template for {Wallaby::Cell}
+      # into a {Wallaby::View::CustomTemplate}.
+      # @overload _find_all(name, prefix, partial, details, key, locals)
+      #   @param name [String] name of the template/partial/{Wallaby::Cell}
+      #   @param prefix [Array<String>]
+      #   @param partial [true, false]
+      #   @param keys [Array<String, Symbol>] keys of the locals variables
+      #   @param options [Hash] options for the lookup
+      #   @return [Array<ActiveView::Template, Wallaby::View::CustomTemplate>]
+      def _find_all(name, prefix, partial, *args)
+        super.try do |templates|
+          templates.each_with_index do |template, index|
+            cell_class = cell_class_from template
+            next unless cell_class
+
+            templates[index] =
+              CustomTemplate.convert template, cell_class, partial
+          end
+        end
+      end
+
+      private
+
       # @note for Rails 5.2 and below
       begin
         # A cell query looks like the following:
@@ -78,14 +103,28 @@ module Wallaby
         super.gsub(%r{/_([^/]+)\z}, '/{,_}\1')
       end
 
-      private
-
       # @example concat a list of values into a string
       #   convert(['html', 'csv']) # => '_html,_cvs,'
       # @param values [Array<String>]
       # @return [String]
       def convert(values)
         (values.map { |v| "_#{v}" } << EMPTY_STRING).join COMMA
+      end
+
+      # Check if the given template is a {Wallaby::Cell} or not
+      # from the `identifier` and `inspect` values.
+      # @param template [ActionView::Template]
+      # @return [String] {Wallaby::Cell} class
+      def cell_class_from(template)
+        [template.identifier, template.inspect]
+          .find { |p| p.end_with? DOT_RB }
+          .try do |path|
+            base_name = template.virtual_path.gsub %r{/[^/]+\z}, EMPTY_STRING
+            snake_class = path[/#{base_name}.+(?=\.rb)/]
+            snake_class.camelize.constantize.try { |c| c < Cell && c || nil }
+          end
+      rescue NameError, LoadError
+        nil
       end
     end
   end

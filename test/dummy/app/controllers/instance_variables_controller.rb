@@ -8,4 +8,8 @@ class InstanceVariablesController < ApplicationController
   def cell_template_assignment
     @h1 = 'h1 instance variable'
   end
+
+  def template_assignment
+    @h1 = 'h1 instance variable'
+  end
 end

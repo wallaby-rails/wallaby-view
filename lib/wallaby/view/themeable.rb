@@ -71,12 +71,12 @@ module Wallaby
 
         # @see {.theme_name}
         def theme_name
-          @theme_name || superclass_s(:theme_name)
+          defined?(@theme_name) ? @theme_name : superclass_s(:theme_name)
         end
 
         # @see {.theme}
         def theme
-          @theme_name && {
+          defined?(@theme_name) && {
             theme_name: @theme_name,
             theme_path: @theme_path
           } || superclass_s(:theme)
@@ -85,7 +85,7 @@ module Wallaby
         # @see {.themes}
         def themes
           parent_themes = superclass_s(:themes) || []
-          (@theme_name ? [theme] : []).concat(parent_themes).compact
+          (defined?(@theme_name) ? [theme] : []).concat(parent_themes).compact
         end
 
         private

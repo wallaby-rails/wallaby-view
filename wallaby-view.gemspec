@@ -30,8 +30,9 @@ Gem::Specification.new do |spec|
   ]
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'rails', '>= 4.2.0'
+  spec.add_dependency 'activemodel', '>= 4.2.0'
+  spec.add_dependency 'railties', '>= 4.2.0'
 
-  spec.add_development_dependency 'minitest-spec-rails'
+  spec.add_development_dependency 'minitest-rails'
   spec.add_development_dependency 'wallaby-cop'
 end
