@@ -39,7 +39,7 @@ module Wallaby
     # @param context [ActionView::Base] view context
     # @param local_assigns [Hash] local variables
     # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
-    def initialize(context, local_assigns, buffer = nil)
+    def initialize(context = nil, local_assigns = nil, buffer = nil)
       update context, local_assigns, buffer
     end
 
@@ -47,6 +47,8 @@ module Wallaby
     # @param local_assigns [Hash] local variables
     # @param buffer [ActionView::OutputBuffer.new, nil] output buffer
     def update(context, local_assigns, buffer = nil)
+      return unless context
+
       @__context = context
       @__local_assigns = local_assigns
       @__buffer = buffer ||= ActionView::OutputBuffer.new
@@ -115,7 +117,7 @@ module Wallaby
       instance_variables.each do |symbol|
         next if VARIABLES.include? symbol
 
-        context.assigns[symbol.to_s[1..-1]] = remove_instance_variable symbol
+        context.assigns[symbol[1..-1]] = remove_instance_variable symbol
       end
     end
 

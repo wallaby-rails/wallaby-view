@@ -47,6 +47,7 @@ module Wallaby
     DOT_RB = '.rb'
     SLASH = '/'
     EQUAL = '='
+    UNDERSCORE = '_'
 
     include ActionViewable
     include Themeable

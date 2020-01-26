@@ -1,9 +1,7 @@
 module Collections
   class CellArrayCellPartialHtml < ApplicationTemplate
     def to_template
-      100.times.each do
-        concat render partial: 'cell_partial'
-      end
+      concat render partial: 'cell_partial', collection: 1..1000
     end
   end
 end

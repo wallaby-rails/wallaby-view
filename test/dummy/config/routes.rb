@@ -83,5 +83,7 @@ Rails.application.routes.draw do
   resource :collection, only: [] do
     get 'array_partial'
     get 'cell_array_cell_partial'
+    get 'array_partial_each'
+    get 'cell_array_cell_partial_each'
   end
 end

@@ -51,11 +51,8 @@ module Wallaby
       protected
 
       def cached_cell(view, locals, buffer)
-        if defined?(@cached_cell)
-          @cached_cell.update view, locals, buffer
-        else
-          @cached_cell = cell_class.new view, locals, buffer
-        end
+        @cached_cell ||= cell_class.new
+        @cached_cell.update view, locals, buffer
         @cached_cell
       end
     end

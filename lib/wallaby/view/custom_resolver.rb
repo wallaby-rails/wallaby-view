@@ -54,8 +54,8 @@ module Wallaby
         def build_query(path, details)
           # NOTE: super is impacted by {#escape_entry}
           origin = super
-          file_name = origin.split('/').last.gsub(/{[^}]*}/, EMPTY_STRING)
-          base_dir = origin.gsub(%r{/[^/]*\z}, EMPTY_STRING)
+          base_dir, _, file_name = origin.rpartition(SLASH)
+          file_name = file_name.gsub(/{[^}]*}/, EMPTY_STRING)
           locales = convert details[:locale]
           formats = convert details[:formats]
           cell_query = "#{base_dir}/#{file_name}{#{locales}}{#{formats}}.rb"
@@ -108,7 +108,9 @@ module Wallaby
       # @param values [Array<String>]
       # @return [String]
       def convert(values)
-        (values.map { |v| "_#{v}" } << EMPTY_STRING).join COMMA
+        values.each_with_object(EMPTY_STRING.dup) do |v, buffer|
+          buffer << UNDERSCORE << v << COMMA
+        end
       end
 
       # Check if the given template is a {Wallaby::Cell} or not
