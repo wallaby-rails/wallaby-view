@@ -33,8 +33,18 @@ module Wallaby
       @__buffer
     end
 
+    %i[object field_name value metadata form].each do |method_id|
+      define_method method_id do
+        local_assigns[method_id]
+      end
+
+      define_method "#{method_id}=" do |value|
+        local_assigns[method_id] = value
+      end
+    end
+
     delegate(*ERB::Util.singleton_methods, to: ERB::Util)
-    delegate :yield, :formats, :concat, :content_tag, to: :context
+    delegate :yield, :assigns, :concat, :render, to: :context
 
     # @param context [ActionView::Base] view context
     # @param local_assigns [Hash] local variables
@@ -51,8 +61,7 @@ module Wallaby
 
       @__context = context
       @__local_assigns = local_assigns
-      @__buffer = buffer ||= ActionView::OutputBuffer.new
-      context.output_buffer ||= buffer
+      @__buffer = buffer || ActionView::OutputBuffer.new
     end
 
     # @note this is a template method that can be overridden by subclasses
@@ -74,56 +83,31 @@ module Wallaby
       to_render(&block)
     end
 
-    # Override the original render method to ensure to copy
-    # instance variables back to view {#context}
-    # @return [ActionView::OutputBuffer, String]
-    # @see ActionView::Base#render
-    def render(*args)
-      copy_instance_variables_to(context)
-      context.render(*args)
-    end
-
     # Produce output for the {Wallaby::Cell} template.
     # @return [ActionView::OutputBuffer, String]
     def render_template(&block)
-      copy_instance_variables_from(context)
-      content = to_template(&block)
-      copy_instance_variables_to(context)
-      buffer == content ? buffer : buffer << content
+      to_buffer { to_template(&block) }
     end
 
     # Produce output for the {Wallaby::Cell} partial.
     # @return [ActionView::OutputBuffer, String]
     def render_partial(&block)
-      copy_instance_variables_from(context)
-      content = to_partial(&block)
-      copy_instance_variables_to(context)
-      buffer == content ? buffer : buffer << content
+      to_buffer { to_partial(&block) }
     end
 
     private
 
-    # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
-    def copy_instance_variables_from(context)
-      context.assigns.each do |key, value|
-        next if KEYS.include? key
-
-        instance_variable_set :"@#{key}", value
-      end
-    end
-
-    # NOTE: instance variables for a view is stored in {ActionView::Base#assigns]
-    def copy_instance_variables_to(context)
-      instance_variables.each do |symbol|
-        next if VARIABLES.include? symbol
-
-        context.assigns[symbol[1..-1]] = remove_instance_variable symbol
-      end
+    def to_buffer
+      buffer_was = context.output_buffer
+      context.output_buffer = @__buffer
+      content = yield
+      context.output_buffer = buffer_was
+      buffer == content ? buffer : buffer << content
     end
 
     # Delegate missing method to {#context}
     def method_missing(method_id, *args, &block)
-      return local_assigns[method_id] if local_assigns_reader?(method_id)
+      return local_assigns[method_id] if local_assigns.key?(method_id)
       return super unless context.respond_to? method_id
 
       context.public_send method_id, *args, &block
@@ -131,14 +115,7 @@ module Wallaby
 
     # Delegate missing method check to {#context}
     def respond_to_missing?(method_id, _include_private)
-      local_assigns_reader?(method_id) \
-        || context.respond_to?(method_id) \
-        || super
-    end
-
-    # Check if the method_id is a key of {#local_assigns}
-    def local_assigns_reader?(method_id)
-      local_assigns.key?(method_id)
+      local_assigns.key?(method_id) || context.respond_to?(method_id) || super
     end
   end
 end

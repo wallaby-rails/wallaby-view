@@ -40,20 +40,16 @@ module Wallaby
       # @param buffer [ActionView::OutputBuffer]
       # @return [ActionView::OutputBuffer]
       def render(view, locals, buffer = ActionView::OutputBuffer.new, &block)
-        instrument('!render_template') do
-          cell = cached_cell view, locals, buffer
-          partial ? cell.render_partial(&block) : cell.render_template(&block)
-        end
-      rescue StandardError => e
-        handle_render_error(view, e)
+        cell = cached_cell view, locals, buffer
+        partial ? cell.render_partial(&block) : cell.render_template(&block)
       end
 
       protected
 
       def cached_cell(view, locals, buffer)
-        @cached_cell ||= cell_class.new
-        @cached_cell.update view, locals, buffer
-        @cached_cell
+        (@cached_cell ||= cell_class.new).tap do |cell|
+          cell.update view, locals, buffer
+        end
       end
     end
   end
