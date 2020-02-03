@@ -1,10 +1,23 @@
-.bundle/
-log/*.log
-pkg/
-spec/dummy/db/*.sqlite3
-spec/dummy/db/*.sqlite3-journal
-spec/dummy/db/*.sqlite3-*
-spec/dummy/log/*.log
-spec/dummy/storage/
-spec/dummy/tmp/
+# folders
+/.bundle/
+/.yardoc/
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+doc/
+tmp/
+log/
+
+coverage/
+deep_cover/
+
+# files
+cc-test-reporter
+.rspec_status
+.byebug_history
 Gemfile.lock
+*.gem
+*.sqlite3
+*.sqlite3-journal
