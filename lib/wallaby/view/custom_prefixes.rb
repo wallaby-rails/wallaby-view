@@ -96,7 +96,7 @@ module Wallaby
 
           # Be able to change the array in overriding methods
           # in {Wallaby::View::ActionViewable#override_prefixes}
-          new_array = instance_exec(array, &block) if block_given?
+          new_array = yield array if block_given?
 
           # If the above block doesn't return an array,
           # it's assumed that `array` is changed

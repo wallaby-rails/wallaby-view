@@ -13,5 +13,9 @@ Rails.application.routes.draw do
     resource :custom, only: [] do
       get 'prefixes'
     end
+
+    resource :custom_child, only: [] do
+      get 'prefixes'
+    end
   end
 end
