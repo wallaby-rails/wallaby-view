@@ -90,7 +90,7 @@ module Wallaby
       private
 
       # @return [Array<String>]
-      def new_prefixes(&block)
+      def new_prefixes
         prefixes.dup.try do |array|
           insert_themes_into array
 
