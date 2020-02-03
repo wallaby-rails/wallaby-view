@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/wallaby-view.svg)](https://badge.fury.io/rb/wallaby-view)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Travis CI](https://travis-ci.org/wallaby-rails/wallaby-view.svg?branch=master)](https://travis-ci.org/wallaby-rails/wallaby-view)
+[![Travis CI](https://travis-ci.com/wallaby-rails/wallaby-view.svg?branch=master)](https://travis-ci.com/wallaby-rails/wallaby-view)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d3e924dd70cc12562eab/maintainability)](https://codeclimate.com/github/wallaby-rails/wallaby-view/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d3e924dd70cc12562eab/test_coverage)](https://codeclimate.com/github/wallaby-rails/wallaby-view/test_coverage)
 [![Inch CI](https://inch-ci.org/github/wallaby-rails/wallaby-view.svg?branch=master)](https://inch-ci.org/github/wallaby-rails/wallaby-view)
@@ -23,13 +23,23 @@ And re-bundle.
 bundle install
 ```
 
-## Basic Usage
-
-For example, there are the following controllers:
+Include Wallaby::View in ApplicationController:
 
 ```ruby
 # app/controllers/application_controller
 class ApplicationController < ActionController::Base
+  include Wallaby::View
+end
+```
+
+## What It Does
+
+For example, given the following controllers:
+
+```ruby
+# app/controllers/application_controller
+class ApplicationController < ActionController::Base
+  include Wallaby::View
 end
 
 # app/controllers/admin/application_controller
@@ -40,16 +50,12 @@ end
 # app/controllers/admin/users_controller
 class Admin::UsersController < Admin::ApplicationController
   self.theme_name = 'account'
-  def edit; end
+  self.options = { mapping_actions: { edit: 'form' } }
 end
 ```
 
-The lookup order of `admin/users#edit` action becomes:
+By using Wallaby::View, the lookup folder order of `admin/application#edit` action becomes:
 
-- app/views/admin/users/edit
-- app/views/admin/users
-- app/views/account/edit
-- app/views/account
 - app/views/admin/application/edit
 - app/views/admin/application
 - app/views/secure/edit
@@ -57,15 +63,30 @@ The lookup order of `admin/users#edit` action becomes:
 - app/views/application/edit
 - app/views/application
 
-Then it becomes possible to create a partial in `app/views/admin/users/edit` just for `admin/users#edit` action, for instance:
+Then it is possible to create a relative partial in one of the above folder for `admin/application#edit` action, for instance:
 
 ```erb
-<%# app/views/admin/users/edit.html.erb %>
+<%# app/views/admin/application/edit.html.erb %>
 <% render 'form' %>
 
-<%# app/views/admin/users/edit/_form.html.erb %>
-This is form only for edit action
+<%# app/views/secure/edit/_form.html.erb %>
+This form partial is for edit action and theme secure,
+but can be rendered by admin/application#edit action
 ```
+
+For `admin/users#edit` action, because `mapping_actions` is set, `edit` is mapped to `form`.
+Therefore, the lookup folder order of `admin/users#edit` becomes:
+
+- app/views/admin/users/form
+- app/views/admin/users
+- app/views/secure/form
+- app/views/secure
+- app/views/admin/application/form
+- app/views/admin/application
+- app/views/secure/form
+- app/views/secure
+- app/views/application/form
+- app/views/application
 
 ## Documentation
 
