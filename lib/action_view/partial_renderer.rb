@@ -19,14 +19,14 @@ module ActionView # :nodoc:
     # even if a partial has been rendered for more than once.
     #
     # To disable this feature and see all logs,
-    # set `ENV['PARTIAL_INSTRUMENT_DISABLED']` to `true`
+    # set `ENV['ALL_PARTIAL_LOGS']` to `true`
     # @param name [String]
     # @param options [Hash]
     def instrument(name, **options, &block)
       identifier = options[:identifier] || @template.try(:identifier) || @path
       instrumented = RequestStore.store[:instrumented] ||= {}
 
-      return yield({}) if !ENV['PARTIAL_INSTRUMENT_DISABLED'] && instrumented[identifier]
+      return yield({}) if !ENV['ALL_PARTIAL_LOGS'] && instrumented[identifier]
 
       original_instrument(name, **options, &block).tap do
         instrumented[identifier] ||= true
