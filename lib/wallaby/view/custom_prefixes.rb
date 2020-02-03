@@ -5,17 +5,21 @@ module Wallaby
     # Custom prefix builder to add more lookup prefix paths to given {#prefixes}.
     class CustomPrefixes
       # @!attribute [r] prefixes
+      # Base prefixes to extend
       # @return [Array<String>]
       # @see Wallaby::View::ActionViewable#_prefixes
       attr_reader :prefixes
       # @!attribute [r] action_name
+      # Action name to be added
       # @return [String]
       attr_reader :action_name
       # @!attribute [r] themes
+      # Themes to be inserted
       # @return [Array<Hash>]
       # @see Wallaby::View::Themeable#.themes
       attr_reader :themes
       # @!attribute [r] options
+      # Options for extending the given prefixes
       # @return [Hash]
       attr_reader :options
 
@@ -58,7 +62,6 @@ module Wallaby
       # @param themes [String, nil]
       # @param options [Hash, nil]
       # @return [Array<String>]
-      # @see #execute
       def self.execute(
         prefixes:, action_name:, themes: nil, options: nil, &block
       )
@@ -68,6 +71,7 @@ module Wallaby
         ).execute(&block)
       end
 
+      # Create the instance
       # @param prefixes [Array<String>]
       # @param action_name [String]
       # @param themes [String]
@@ -79,7 +83,7 @@ module Wallaby
         @options = (options || {}).with_indifferent_access
       end
 
-      # @return [Array<String>]
+      # @see .execute
       def execute(&block)
         new_prefixes(&block).each_with_object([]) do |prefix, array|
           # Extend the prefix with action name suffix

@@ -19,8 +19,8 @@ module Wallaby
         )
       end
 
-      # Original find method.
       # @!method original_find(path, prefixes, partial, *args)
+      # Original find method.
       # @param path [String, Symbol]
       # @param prefixes [Array<String>]
       # @param partial [true, false]
@@ -41,6 +41,7 @@ module Wallaby
         cached_lookup[key] ||= original_find(path, prefixes, partial, *args)
       end
 
+      # @!method find_template(path, prefixes, partial, *args)
       # This is an alias method of {#find}
       # (see #find)
       alias find_template find

@@ -7,11 +7,11 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d3e924dd70cc12562eab/test_coverage)](https://codeclimate.com/github/wallaby-rails/wallaby-view/test_coverage)
 [![Inch CI](https://inch-ci.org/github/wallaby-rails/wallaby-view.svg?branch=master)](https://inch-ci.org/github/wallaby-rails/wallaby-view)
 
-Wallaby::View is a Ruby gem that extends Rails layout/template/partial inheritance chain to allow searching layout/template/partial using action name and theme name.
+**Wallaby::View** is a Ruby gem that extends Rails layout/template/partial inheritance chain to allow searching layout/template/partial using action name and theme name.
 
 ## Install
 
-Add Wallaby::View to `Gemfile`.
+Add **Wallaby::View** to `Gemfile`.
 
 ```ruby
 gem 'wallaby-view'
@@ -23,7 +23,7 @@ And re-bundle.
 bundle install
 ```
 
-Include Wallaby::View in ApplicationController:
+Include **Wallaby::View** in the target controller (e.g. `ApplicationController`):
 
 ```ruby
 # app/controllers/application_controller
@@ -54,7 +54,7 @@ class Admin::UsersController < Admin::ApplicationController
 end
 ```
 
-By using Wallaby::View, the lookup folder order of `admin/application#edit` action becomes:
+By using **Wallaby::View**, the lookup folder order of `admin/application#edit` action becomes:
 
 - app/views/admin/application/edit
 - app/views/admin/application
@@ -70,11 +70,11 @@ Then it is possible to create a relative partial in one of the above folder for 
 <% render 'form' %>
 
 <%# app/views/secure/edit/_form.html.erb %>
-This form partial is for edit action and theme secure,
-but can be rendered by admin/application#edit action
+This form partial is for `edit` action and `secure` theme,
+but still can be rendered by `admin/application#edit` action
 ```
 
-For `admin/users#edit` action, because `mapping_actions` is set, `edit` is mapped to `form`.
+For `admin/users#edit` action, since `mapping_actions` is set, `edit` will be mapped to `form`.
 Therefore, the lookup folder order of `admin/users#edit` becomes:
 
 - app/views/admin/users/form
