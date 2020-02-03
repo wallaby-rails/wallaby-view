@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['me@tian.im']
   spec.license       = 'MIT'
 
-  spec.summary       = 'Wallaby View to extend Rails layout and rendering'
+  spec.summary       = 'Wallaby View to extend Rails prefixes and improve lookup performance.'
   spec.description   = spec.summary
   spec.homepage      = 'https://github.com/wallaby-rails/wallaby-view'
 
@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activemodel', '>= 4.2.0'
   spec.add_dependency 'railties', '>= 4.2.0'
+  spec.add_dependency 'request_store'
 
   spec.add_development_dependency 'minitest-rails'
   spec.add_development_dependency 'wallaby-cop'

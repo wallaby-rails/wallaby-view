@@ -2,96 +2,90 @@
 
 module Wallaby
   module View
-    # Theme module
+    # Theme module to allow layout and prefixes to be specified.
     module Themeable
       extend ActiveSupport::Concern
 
       class << self
         # @!attribute theme_name
-        #   The theme name is used to apply a set of theme implementation
-        #   for the frontend (html/css/javascript).
+        # The theme name is used to specify the layout and prefixes
+        # so that a set of theme implementation for the frontend (html/css/javascript)
+        # can be applied
         #
-        #   When theme name is set to e.g. `custom_theme`,
-        #   the following changes will be made:
+        # When theme name is set to e.g. `custom_theme`,
+        # the following changes will be made:
         #
-        #   - layout will be set to the same name `custom_theme`
-        #   - theme name will be added to the lookup prefixes
-        #     right after the controller path of where it's defined.
+        # - layout will be set to the same name `custom_theme`
+        # - theme name will be added to the lookup prefixes
+        #   right after the controller path of where it's defined.
         #
-        #   Once theme name is set, all its subclass controllers
-        #   will inherit the same theme name
-        #   @example To set an theme name:
-        #     class Admin::ApplicationController < ApplicationController
-        #       self.theme_name = 'secure'
+        # Once theme name is set, all its subclass controllers
+        # will inherit the same theme name
+        # @example To set an theme name:
+        #   class Admin::ApplicationController < ApplicationController
+        #     self.theme_name = 'secure'
         #
-        #       def index
-        #         _prefixes
-        #         # =>
-        #         # [
-        #         #   'admin/application/index',
-        #         #   'admin/application',
-        #         #   'secure/index',
-        #         #   'secure',
-        #         #   'application/index',
-        #         #   'application'
-        #         # ]
-        #       end
-        #     end
-        #
-        #     class Admin::UsersController < Admin::ApplicationController
-        #       self.theme_name # => 'secure'
-        #     end
-        #   @return [String, nil] theme name
-
-        # @!method theme
-        #   @example Once theme is set, the metadata will be set as well:
-        #     class Admin::UsersController < ApplicationController
-        #       self.theme_name = 'secure'
-        #
-        #       self.theme
+        #     def index
+        #       _prefixes
         #       # =>
-        #       # {
-        #       #   theme_name: 'secure',
-        #       #   theme_path: 'admin/users'
-        #       # }
+        #       # [
+        #       #   'admin/application/index',
+        #       #   'admin/application',
+        #       #   'secure/index',
+        #       #   'secure',
+        #       #   'application/index',
+        #       #   'application'
+        #       # ]
         #     end
-        #   @return [Hash] theme metadata
+        #     end
+        # @return [String, nil] theme name
 
-        # @!method themes
-        #   @return [Array<Hash>] a list of theme metadata
+        # @!attribute [r] theme
+        # @example Once theme is set, the metadata will be set as well:
+        #   class Admin::ApplicationController < ApplicationController
+        #     self.theme_name = 'secure'
+        #
+        #     self.theme
+        #     # =>
+        #     # {
+        #     #   theme_name: 'secure',
+        #     #   theme_path: 'admin/application'
+        #     # }
+        #   end
+        # @return [Hash] theme metadata
+
+        # @!attribute [r] themes
+        # @return [Array<Hash>] a list of {.theme} metadata
       end
 
       class_methods do
-        # @see {.theme_name}
-        def theme_name=(theme_name)
-          layout theme_name
+        # (see .theme_name)
+        def theme_name=(theme_name, **options, &block)
+          return unless theme_name
+
+          layout theme_name, options, &block
           @theme_path = theme_name && controller_path
           @theme_name = theme_name
         end
 
-        # @see {.theme_name}
+        # (see .theme_name)
         def theme_name
-          defined?(@theme_name) ? @theme_name : superclass_s(:theme_name)
+          defined?(@theme_name) && @theme_name || View.try_to(superclass, :theme_name)
         end
 
-        # @see {.theme}
+        # (see .theme)
         def theme
-          defined?(@theme_name) && {
+          defined?(@theme_name) && @theme_name && {
             theme_name: @theme_name,
             theme_path: @theme_path
-          } || superclass_s(:theme)
+          } || View.try_to(superclass, :theme)
         end
 
-        # @see {.themes}
+        # (see .themes)
         def themes
-          parent_themes = superclass_s(:themes) || []
-          (defined?(@theme_name) ? [theme] : []).concat(parent_themes).compact
-        end
-
-        private
-
-        def superclass_s(method)
-          superclass.respond_to?(method) && superclass.public_send(method) || nil
+          list = View.try_to(superclass, :themes) || []
+          list.prepend theme if defined?(@theme_name) && @theme_name
+          list.compact
         end
       end
     end

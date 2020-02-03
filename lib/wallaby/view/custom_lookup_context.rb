@@ -2,14 +2,12 @@
 
 module Wallaby
   module View
-    # The custom lookup context uses
-    # {Wallaby::View::CustomResolver} to find cell/partial.
+    # Custom lookup context to cache lookup results.
     class CustomLookupContext < ::ActionView::LookupContext
-      # Convert an authenticate ActionView::LookupContext instance
-      # into {Wallaby::View::CustomLookupContext}
+      # Convert an ActionView::LookupContext instance into {Wallaby::View::CustomLookupContext}
       # @param lookup_context [ActionView::LookupContext]
       # @param details [Hash]
-      # @param prefixes [Array]
+      # @param prefixes [Array<String>]
       # @return [Wallaby::View::CustomLookupContext]
       def self.convert(lookup_context, details: nil, prefixes: nil)
         return lookup_context if lookup_context.is_a? self
@@ -21,22 +19,39 @@ module Wallaby
         )
       end
 
-      # @note for Rails 6 and above
-      # It overrides the origin method
-      # to convert paths to instances of {Wallaby::View::CustomPathSet}
-      # @param paths [Array]
-      # @return [Wallaby::View::CustomPathSet]
-      def build_view_paths(paths)
-        CustomPathSet.new Array(paths)
+      # Original find method.
+      # @!method original_find(path, prefixes, partial, *args)
+      # @param path [String, Symbol]
+      # @param prefixes [Array<String>]
+      # @param partial [true, false]
+      # @param args [Array] the rest of the arguments
+      # @return [ActionView::Template]
+      alias original_find find
+
+      # This is to resolve the performance bottleneck for template/partial lookup.
+      #
+      # {#cached_lookup} is used to cache the lookup result throughout a request.
+      # @param path [String, Symbol]
+      # @param prefixes [Array<String>]
+      # @param partial [true, false]
+      # @param args [Array] the rest of the arguments
+      # @return [ActionView::Template]
+      def find(path, prefixes, partial, *args)
+        key = [path, prefixes, partial].join(EQUAL)
+        cached_lookup[key] ||= original_find(path, prefixes, partial, *args)
       end
 
-      # @note for Rails 5.2 and below
-      # It overrides the origin method
-      # to store and convert paths to instances of {Wallaby::View::CustomPathSet}
-      # @param paths [Array]
-      # @return [Wallaby::View::CustomPathSet]
-      def view_paths=(paths)
-        @view_paths = build_view_paths paths
+      # This is an alias method of {#find}
+      # (see #find)
+      alias find_template find
+
+      protected
+
+      # @!attribute [r] cached_lookup
+      # This is a lookup cache for method {#find}
+      # @return [Hash] prefix options
+      def cached_lookup
+        @cached_lookup ||= {}
       end
     end
   end

@@ -10,8 +10,6 @@ gemspec path: '../'
 
 gem 'rails', '~> 6.0.0'
 
-gem 'better_errors'
-gem 'byebug'
 gem 'simplecov'
 gem 'sqlite3'
 gem 'wallaby-cop', git: 'https://github.com/wallaby-rails/wallaby-cop.git', branch: 'master'

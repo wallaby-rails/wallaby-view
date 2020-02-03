@@ -4,39 +4,82 @@ module Wallaby
   module View
     # Custom prefix builder to add more lookup prefix paths to given {#prefixes}.
     class CustomPrefixes
-      include ActiveModel::Model
+      # @!attribute [r] prefixes
+      # @return [Array<String>]
+      # @see Wallaby::View::ActionViewable#_prefixes
+      attr_reader :prefixes
+      # @!attribute [r] action_name
+      # @return [String]
+      attr_reader :action_name
+      # @!attribute [r] themes
+      # @return [Array<Hash>]
+      # @see Wallaby::View::Themeable#.themes
+      attr_reader :themes
+      # @!attribute [r] options
+      # @return [Hash]
+      attr_reader :options
 
-      # @!attribute prefixes
-      #   @return [Array<String>]
-      #   @see Wallaby::View::ActionViewable#_prefixes
-      attr_accessor :prefixes
-      # @!attribute action_name
-      #   @return [String]
-      attr_accessor :action_name
-      # @!attribute themes
-      #   @return [Array<Hash>]
-      #   @see Wallaby::View::Themeable#.themes
-      attr_accessor :themes
-      # @!attribute options
-      #   @return [Hash]
-      attr_accessor :options
-
+      # @example To extend given prefixes:
+      #   Wallaby::View::CustomPrefixes.execute(
+      #     prefixes: ['users', 'application'], action_name: 'index'
+      #   )
+      #   # => [
+      #   #   'users/index',
+      #   #   'users',
+      #   #   'application/index',
+      #   #   'application'
+      #   # ]
+      # @example To extend given prefixes with themes:
+      #   Wallaby::View::CustomPrefixes.execute(
+      #     prefixes: ['users', 'application'], action_name: 'index',
+      #     themes: [{ theme_name: 'secure', theme_path: 'users' }]
+      #   )
+      #   # => [
+      #   #   'users/index',
+      #   #   'users',
+      #   #   'secure/index',
+      #   #   'secure',
+      #   #   'application/index',
+      #   #   'application'
+      #   # ]
+      # @example To extend given prefixes with mapped action:
+      #   Wallaby::View::CustomPrefixes.execute(
+      #     prefixes: ['users', 'application'], action_name: 'edit',
+      #     options: { mapping_actions: { 'edit' => 'form' } }
+      #   )
+      #   # => [
+      #   #   'users/form',
+      #   #   'users',
+      #   #   'application/form',
+      #   #   'application'
+      #   # ]
       # @param prefixes [Array<String>]
       # @param action_name [String]
       # @param themes [String, nil]
       # @param options [Hash, nil]
       # @return [Array<String>]
+      # @see #execute
       def self.execute(
         prefixes:, action_name:, themes: nil, options: nil, &block
       )
         new(
-          prefixes: prefixes,
-          action_name: action_name,
-          themes: themes,
-          options: (options || {}).with_indifferent_access
+          prefixes: prefixes, action_name: action_name,
+          themes: themes, options: options
         ).execute(&block)
       end
 
+      # @param prefixes [Array<String>]
+      # @param action_name [String]
+      # @param themes [String]
+      # @param options [Hash]
+      def initialize(prefixes:, action_name:, themes:, options:)
+        @prefixes = prefixes
+        @action_name = action_name
+        @themes = themes
+        @options = (options || {}).with_indifferent_access
+      end
+
+      # @return [Array<String>]
       def execute(&block)
         new_prefixes(&block).each_with_object([]) do |prefix, array|
           # Extend the prefix with action name suffix
@@ -46,6 +89,7 @@ module Wallaby
 
       private
 
+      # @return [Array<String>]
       def new_prefixes(&block)
         prefixes.dup.try do |array|
           insert_themes_into array
@@ -61,6 +105,7 @@ module Wallaby
       end
 
       # Action name suffix
+      # @return [Hash]
       def suffix
         @suffix ||= mapped_action_name || action_name
       end
