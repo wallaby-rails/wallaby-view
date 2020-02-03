@@ -1,10 +1,10 @@
 module Admin
   class CustomsController < Admin::UsersController
+    self.prefix_options = { mapping_actions: { prefixes: 'form' } }
+
     def _prefixes
-      super(
-        options: { mapping_actions: { 'prefixes' => 'form' } }
-      ) do |prefixes|
-        prefixes.prepend('super/man')
+      super do |prefixes|
+        prefixes.insert(prefixes.index('admin/customs'), 'super/man')
       end
     end
   end

@@ -27,9 +27,10 @@ script:
   # - RAILS_ENV=test bundle exec rake --trace db:setup db:migrate spec
   - RAILS_ENV=test bundle exec rake --trace test
 before_script:
-  # setup code climate test coverage
+  # setup code climate for test coverage
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 after_script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+  # send code climate the test coverage
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

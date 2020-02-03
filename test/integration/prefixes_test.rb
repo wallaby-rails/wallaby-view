@@ -75,6 +75,30 @@ class PrefixesTest < ActionDispatch::IntegrationTest
     ]
   end
 
+  test 'admin custom child' do
+    get prefixes_admin_custom_child_path
+
+    assert_response :success
+    assert_equal JSON.parse(response.body), [
+      'admin/custom_children/form',
+      'admin/custom_children',
+      'super/man/form',
+      'super/man',
+      'admin/customs/form',
+      'admin/customs',
+      'admin/users/form',
+      'admin/users',
+      'account/form',
+      'account',
+      'admin/application/form',
+      'admin/application',
+      'secure/form',
+      'secure',
+      'application/form',
+      'application'
+    ]
+  end
+
   test 'admin user profiles show and its partial' do
     get admin_user_profile_path
 
