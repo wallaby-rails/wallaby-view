@@ -18,4 +18,8 @@ Rails.application.routes.draw do
       get 'prefixes'
     end
   end
+
+  resource :collection, only: [] do
+    get 'partials'
+  end
 end

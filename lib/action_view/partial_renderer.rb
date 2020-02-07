@@ -13,6 +13,9 @@ module ActionView # :nodoc:
     # Original method of {#instrument}
     # @param name [String]
     # @param options [Hash]
+    # @yield [payload]
+    # @yieldparam payload [Hash] payload object for instrument
+    # @return [ActionView::OutputBuffer]
     alias original_instrument instrument
 
     # Logs for partial rendering. Only one log will be printed
@@ -22,6 +25,9 @@ module ActionView # :nodoc:
     # set `ENV['ALL_PARTIAL_LOGS']` to `true`
     # @param name [String]
     # @param options [Hash]
+    # @yield [payload]
+    # @yieldparam payload [Hash] payload object for instrument
+    # @return [ActionView::OutputBuffer]
     def instrument(name, **options, &block)
       identifier = options[:identifier] || @template.try(:identifier) || @path
       instrumented = RequestStore.store[:instrumented] ||= {}
