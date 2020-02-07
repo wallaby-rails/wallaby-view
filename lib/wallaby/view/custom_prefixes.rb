@@ -23,6 +23,7 @@ module Wallaby
       # @return [Hash]
       attr_reader :options
 
+      # Extend given prefixes with action name and theme name
       # @example To extend given prefixes:
       #   Wallaby::View::CustomPrefixes.execute(
       #     prefixes: ['users', 'application'], action_name: 'index'
@@ -83,7 +84,8 @@ module Wallaby
         @options = (options || {}).with_indifferent_access
       end
 
-      # @see .execute
+      # Extend given prefixes with action name and theme name
+      # @return [Array<String>]
       def execute(&block)
         new_prefixes(&block).each_with_object([]) do |prefix, array|
           # Extend the prefix with action name suffix
