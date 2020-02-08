@@ -10,7 +10,7 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
-## [0.2.0] - 2020-02-08
+## [0.1.1] - 2020-02-08
 
 ### Changed
 
