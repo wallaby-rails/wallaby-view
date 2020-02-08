@@ -14,7 +14,7 @@ Continously to work on the rendering performance.
 
 ### Changed
 
-- chore: be able to reset theme_name to false/nil (#4)
+- chore: be able to reset theme_name to false/nil ([#4](../../issues/4))
 
 ## [0.1.0] - 2020-02-07
 
