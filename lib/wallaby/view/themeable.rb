@@ -63,7 +63,7 @@ module Wallaby
         def theme_name=(theme_name, **options, &block)
           layout theme_name, options, &block
           @theme_path = theme_name && controller_path || nil
-          @theme_name = theme_name
+          @theme_name = theme_name || nil
         end
 
         # (see .theme_name)

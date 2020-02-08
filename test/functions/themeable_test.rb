@@ -34,6 +34,12 @@ class ThemeableTest < Minitest::Test
     assert_equal CollectionsController.theme, theme_name: 'test', theme_path: 'collections'
     assert_equal CollectionsController.themes, [{ theme_name: 'test', theme_path: 'collections' }]
 
+    CollectionsController.theme_name = false
+    assert_nil CollectionsController.theme_name
+    assert_equal CollectionsController._layout, false
+    assert_nil CollectionsController.theme
+    assert_equal CollectionsController.themes, []
+
     CollectionsController.theme_name = nil
     assert_nil CollectionsController.theme_name
     assert_nil CollectionsController._layout
