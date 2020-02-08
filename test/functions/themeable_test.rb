@@ -22,18 +22,14 @@ class ThemeableTest < Minitest::Test
     assert_equal Admin::UserProfilesController.themes, [{ theme_name: 'account', theme_path: 'admin/users' }, { theme_name: 'secure', theme_path: 'admin/application' }]
   end
 
-  def test_collections_controller_theme_metadata
+  def test_collections_controller_default_theme_metadata
     assert_nil CollectionsController.theme_name
     assert_nil CollectionsController._layout
     assert_nil CollectionsController.theme
     assert_equal CollectionsController.themes, []
+  end
 
-    CollectionsController.theme_name = 'test'
-    assert_equal CollectionsController.theme_name, 'test'
-    assert_equal CollectionsController._layout, 'test'
-    assert_equal CollectionsController.theme, theme_name: 'test', theme_path: 'collections'
-    assert_equal CollectionsController.themes, [{ theme_name: 'test', theme_path: 'collections' }]
-
+  def test_collections_controller_theme_metadata_set_to_false
     CollectionsController.theme_name = false
     assert_nil CollectionsController.theme_name
     assert_equal CollectionsController._layout, false
@@ -43,7 +39,17 @@ class ThemeableTest < Minitest::Test
     CollectionsController.theme_name = nil
     assert_nil CollectionsController.theme_name
     assert_nil CollectionsController._layout
-    assert_nil CollectionsController.theme
-    assert_equal CollectionsController.themes, []
+  end
+
+  def test_collections_controller_theme_metadata_reset_to_nil
+    CollectionsController.theme_name = 'test'
+    assert_equal CollectionsController.theme_name, 'test'
+    assert_equal CollectionsController._layout, 'test'
+    assert_equal CollectionsController.theme, theme_name: 'test', theme_path: 'collections'
+    assert_equal CollectionsController.themes, [{ theme_name: 'test', theme_path: 'collections' }]
+
+    CollectionsController.theme_name = nil
+    assert_nil CollectionsController.theme_name
+    assert_nil CollectionsController._layout
   end
 end
