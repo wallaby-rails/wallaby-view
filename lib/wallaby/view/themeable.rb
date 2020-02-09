@@ -61,11 +61,9 @@ module Wallaby
       class_methods do
         # (see .theme_name)
         def theme_name=(theme_name, **options, &block)
-          return unless theme_name
-
           layout theme_name, options, &block
-          @theme_path = theme_name && controller_path
-          @theme_name = theme_name
+          @theme_path = theme_name && controller_path || nil
+          @theme_name = theme_name || nil
         end
 
         # (see .theme_name)

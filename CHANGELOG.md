@@ -10,6 +10,12 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
+## [0.1.1] - 2020-02-08
+
+### Changed
+
+- chore: be able to reset theme_name to false/nil ([#4](../../issues/4))
+
 ## [0.1.0] - 2020-02-07
 
 First version of `Wallaby::View` extracted from `Wallaby` gem:
