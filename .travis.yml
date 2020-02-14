@@ -4,6 +4,7 @@ rvm:
   - 2.4
   - 2.5
   - 2.6
+  - 2.7
 gemfile:
   - gemfiles/Gemfile.rails-4.2
   - gemfiles/Gemfile.rails-5.0
@@ -14,6 +15,8 @@ matrix:
   exclude:
   - rvm: 2.4
     gemfile: gemfiles/Gemfile.rails-6.0
+  - rvm: 2.7
+    gemfile: gemfiles/Gemfile.rails-4.2
 env:
   global:
     - CC_TEST_REPORTER_ID=9ddd85ddd2d59e4eddd860b45d5416283463d27ef531ef901051c2960697208b
@@ -24,13 +27,12 @@ before_install:
   - gem install bundler -v '< 2'
 script:
   - bundle exec rubocop
-  # - RAILS_ENV=test bundle exec rake --trace db:setup db:migrate spec
   - RAILS_ENV=test bundle exec rake --trace test
 before_script:
-  # setup code climate for test coverage
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+  # setup code climate test coverage only for `master` branch
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then chmod +x ./cc-test-reporter; fi
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then ./cc-test-reporter before-build; fi
 after_script:
   # send code climate the test coverage
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi

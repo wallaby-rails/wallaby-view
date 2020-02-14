@@ -1,4 +1,4 @@
-# Wallaby::View
+# [Wallaby::View](https://github.com/wallaby-rails/wallaby-view)
 
 [![Gem Version](https://badge.fury.io/rb/wallaby-view.svg)](https://badge.fury.io/rb/wallaby-view)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -91,12 +91,12 @@ Therefore, the lookup folder order of `admin/users#edit` becomes:
 ## Documentation
 
 - [API Reference](https://www.rubydoc.info/gems/wallaby-view)
-- [Change Logs](CHANGELOG.md)
+- [Change Logs](https://github.com/wallaby-rails/wallaby-view/blob/master/CHANGELOG.md)
 
 ## Want to contribute?
 
-Raise an issue, discuss and resolve!
+Raise an [issue](https://github.com/wallaby-rails/wallaby-view/issues/new), discuss and resolve!
 
 ## License
 
-This project uses [MIT License](LICENSE).
+This project uses [MIT License](https://github.com/wallaby-rails/wallaby-view/blob/master/LICENSE).

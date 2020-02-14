@@ -10,13 +10,20 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
-## [0.1.1] - 2020-02-08
+## [0.1.2](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.2) - 2020-02-14
+
+### Removed
+
+- chore: remove activemodel gem dependency ([#5](https://github.com/wallaby-rails/wallaby-view/pull/5))
+
+
+## [0.1.1](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.1) - 2020-02-08
 
 ### Changed
 
-- chore: be able to reset theme_name to false/nil ([#4](../../issues/4))
+- chore: be able to reset theme_name to false/nil ([#4](https://github.com/wallaby-rails/wallaby-view/pull/4))
 
-## [0.1.0] - 2020-02-07
+## [0.1.0](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.0) - 2020-02-07
 
 First version of `Wallaby::View` extracted from `Wallaby` gem:
 
