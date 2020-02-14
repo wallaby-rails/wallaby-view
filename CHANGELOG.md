@@ -14,14 +14,14 @@ Continously to work on the rendering performance.
 
 ### Removed
 
-- chore: remove activemodel gem dependency ([issue #5](https://github.com/wallaby-rails/wallaby-view/issues/5))
+- chore: remove activemodel gem dependency ([#5](https://github.com/wallaby-rails/wallaby-view/pull/5))
 
 
 ## [0.1.1](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.1) - 2020-02-08
 
 ### Changed
 
-- chore: be able to reset theme_name to false/nil ([issue #4](https://github.com/wallaby-rails/wallaby-view/issues/4))
+- chore: be able to reset theme_name to false/nil ([#4](https://github.com/wallaby-rails/wallaby-view/pull/4))
 
 ## [0.1.0](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.0) - 2020-02-07
 
