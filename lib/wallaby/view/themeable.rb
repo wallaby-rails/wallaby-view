@@ -68,7 +68,7 @@ module Wallaby
 
         # (see .theme_name)
         def theme_name
-          defined?(@theme_name) && @theme_name || View.try_to(superclass, :theme_name)
+          defined?(@theme_name) && @theme_name || superclass.try(:theme_name)
         end
 
         # (see .theme)
@@ -76,12 +76,12 @@ module Wallaby
           defined?(@theme_name) && @theme_name && {
             theme_name: @theme_name,
             theme_path: @theme_path
-          } || View.try_to(superclass, :theme)
+          } || superclass.try(:theme)
         end
 
         # (see .themes)
         def themes
-          list = View.try_to(superclass, :themes) || []
+          list = superclass.try(:themes) || []
           list.prepend theme if defined?(@theme_name) && @theme_name
           list.compact
         end
