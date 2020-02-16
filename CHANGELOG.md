@@ -10,12 +10,17 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
+## [0.1.3](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.3) - 2020-02-16
+
+### Removed
+
+- chore: remove View.try_to method and use Rails' try method ([#6](https://github.com/wallaby-rails/wallaby-view/pull/6))
+
 ## [0.1.2](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.2) - 2020-02-14
 
 ### Removed
 
 - chore: remove activemodel gem dependency ([#5](https://github.com/wallaby-rails/wallaby-view/pull/5))
-
 
 ## [0.1.1](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.1) - 2020-02-08
 

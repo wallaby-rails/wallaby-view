@@ -40,19 +40,6 @@ module Wallaby # :nodoc:
       mod.send :alias_method, :_prefixes, :override_prefixes
     end
 
-    # Util method to check if the given subject responds to the given method.
-    #
-    # If so, it will send the message and return the result. Otherwise, nil.
-    # @param subject [Object]
-    # @param method_id [Symbol, String]
-    # @param args [Array]
-    # @return [Object, nil]
-    def self.try_to(subject, method_id, *args, &block)
-      return unless subject.respond_to?(method_id)
-
-      subject.public_send(method_id, *args, &block)
-    end
-
     COMMA = ',' # :nodoc:
     EMPTY_STRING = '' # :nodoc:
     DOT_RB = '.rb' # :nodoc:

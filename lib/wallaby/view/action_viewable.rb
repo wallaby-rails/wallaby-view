@@ -17,7 +17,7 @@ module Wallaby
         attr_writer :prefix_options
 
         def prefix_options
-          @prefix_options ||= View.try_to superclass, :prefix_options
+          @prefix_options ||= superclass.try(:prefix_options)
         end
       end
 
