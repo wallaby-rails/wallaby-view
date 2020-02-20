@@ -30,9 +30,9 @@ script:
   - RAILS_ENV=test bundle exec rake --trace test
 before_script:
   # setup code climate test coverage only for `master` branch
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then chmod +x ./cc-test-reporter; fi
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then ./cc-test-reporter before-build; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then chmod +x ./cc-test-reporter; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then ./cc-test-reporter before-build; fi
 after_script:
   # send code climate the test coverage
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
