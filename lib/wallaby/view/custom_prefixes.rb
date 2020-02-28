@@ -88,8 +88,9 @@ module Wallaby
       # @return [Array<String>]
       def execute(&block)
         new_prefixes(&block).each_with_object([]) do |prefix, array|
-          # Extend the prefix with action name suffix
-          array << "#{prefix}/#{suffix}" << prefix
+          # Extend the prefix with actions
+          actions.each { |action| array << "#{prefix}/#{action}" }
+          array << prefix
         end
       end
 
@@ -110,13 +111,14 @@ module Wallaby
         end
       end
 
-      # Action name suffix
-      # @return [Hash]
-      def suffix
-        @suffix ||= mapped_action_name || action_name
+      # Action name actions
+      # @return [Array<String>]
+      def actions
+        @actions ||= [action_name, mapped_action_name].compact
       end
 
       # Insert theme name into the prefixes
+      # @param [Array] array
       def insert_themes_into(array)
         themes.each do |theme|
           index = array.index theme[:theme_path]

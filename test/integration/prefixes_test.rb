@@ -58,18 +58,25 @@ class PrefixesTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body), [
+      'super/man/prefixes',
       'super/man/form',
       'super/man',
+      'admin/customs/prefixes',
       'admin/customs/form',
       'admin/customs',
+      'admin/users/prefixes',
       'admin/users/form',
       'admin/users',
+      'account/prefixes',
       'account/form',
       'account',
+      'admin/application/prefixes',
       'admin/application/form',
       'admin/application',
+      'secure/prefixes',
       'secure/form',
       'secure',
+      'application/prefixes',
       'application/form',
       'application'
     ]
@@ -80,20 +87,28 @@ class PrefixesTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal JSON.parse(response.body), [
+      'admin/custom_children/prefixes',
       'admin/custom_children/form',
       'admin/custom_children',
+      'super/man/prefixes',
       'super/man/form',
       'super/man',
+      'admin/customs/prefixes',
       'admin/customs/form',
       'admin/customs',
+      'admin/users/prefixes',
       'admin/users/form',
       'admin/users',
+      'account/prefixes',
       'account/form',
       'account',
+      'admin/application/prefixes',
       'admin/application/form',
       'admin/application',
+      'secure/prefixes',
       'secure/form',
       'secure',
+      'application/prefixes',
       'application/form',
       'application'
     ]

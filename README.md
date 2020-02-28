@@ -50,7 +50,7 @@ end
 # app/controllers/admin/users_controller
 class Admin::UsersController < Admin::ApplicationController
   self.theme_name = 'account'
-  self.options = { mapping_actions: { edit: 'form' } }
+  self.prefix_options = { mapping_actions: { edit: 'form' } }
 end
 ```
 
@@ -77,16 +77,45 @@ but still can be rendered by `admin/application#edit` action
 For `admin/users#edit` action, since `mapping_actions` option is set, `edit` will be mapped to `form`.
 Therefore, the lookup folder order of `admin/users#edit` becomes:
 
+- app/views/admin/users/edit
 - app/views/admin/users/form
 - app/views/admin/users
+- app/views/secure/edit
 - app/views/secure/form
 - app/views/secure
+- app/views/admin/application/edit
 - app/views/admin/application/form
 - app/views/admin/application
+- app/views/secure/edit
 - app/views/secure/form
 - app/views/secure
+- app/views/application/edit
 - app/views/application/form
 - app/views/application
+
+## Advanced Usage
+
+It is possible to override the `_prefixes` method to make more changes to the prefixes:
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Wallaby::View
+
+  def _prefixes
+    super do |prefixes|
+      prefixes << 'last_resort'
+    end
+  end
+end
+```
+
+Then the lookup folder order of `application#edit` becomes:
+
+- app/views/application/edit
+- app/views/application
+- app/views/last_resort/edit
+- app/views/last_resort
+
 
 ## Documentation
 
