@@ -10,6 +10,13 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.4) - 2020-02-28
+
+### Removed
+
+- feat: allow mapped action to be inserted instead of replacing existing action ([#8](https://github.com/wallaby-rails/wallaby-view/pull/8))
+- chore: use simplecov 0.17 for codeclimate report ([#7](https://github.com/wallaby-rails/wallaby-view/pull/7))
+
 ## [0.1.3](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.3) - 2020-02-16
 
 ### Removed
