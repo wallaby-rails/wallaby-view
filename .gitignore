@@ -12,6 +12,7 @@ log/
 
 coverage/
 deep_cover/
+.sass-cache/
 
 # files
 cc-test-reporter

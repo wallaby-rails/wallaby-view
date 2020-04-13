@@ -7,15 +7,13 @@ module Wallaby
     module ActionViewable
       extend ActiveSupport::Concern
 
-      class << self
-        # @!attribute prefix_options
-        # It stores the options for {#_prefixes}. It can inherit options from superclass.
-        # @return [Hash] prefix options
-      end
-
-      class_methods do
+      module ClassMethods # :nodoc:
+        # @!attribute[w] prefix_options
         attr_writer :prefix_options
 
+        # @!attribute[r] prefix_options
+        # It stores the options for {#_prefixes}. It can inherit options from superclass.
+        # @return [Hash] prefix options
         def prefix_options
           @prefix_options ||= superclass.try(:prefix_options)
         end
@@ -48,7 +46,7 @@ module Wallaby
       # @param prefixes [Array<String>] the base prefixes
       # @param action_name [String] the action name to add to the prefixes list
       # @param themes [String] the theme name to add to the prefixes list
-      # @param options [Hash] the options for {Wallaby::View::CustomPrefixes}
+      # @param options [Hash] the options that {Wallaby::View::CustomPrefixes} accepts
       # @return [Array<String>]
 
       # (see #_prefixes)

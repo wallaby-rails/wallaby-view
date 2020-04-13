@@ -6,8 +6,7 @@ module Wallaby
     module Themeable
       extend ActiveSupport::Concern
 
-      class << self
-        # @!attribute theme_name
+      module ClassMethods # :nodoc:
         # The theme name is used to specify the layout and prefixes
         # so that a set of theme implementation for the frontend (html/css/javascript)
         # can be applied
@@ -27,6 +26,7 @@ module Wallaby
         #
         #     def index
         #       _prefixes
+        #
         #       # =>
         #       # [
         #       #   'admin/application/index',
@@ -37,8 +37,22 @@ module Wallaby
         #       #   'application'
         #       # ]
         #     end
-        #     end
+        #   end
+        # @param theme_name [String]
+        # @param options [Hash] same options as Rails'
+        #   {https://api.rubyonrails.org/classes/ActionView/Layouts/ClassMethods.html#method-i-layout
+        #   layout} method
+        def theme_name=(theme_name, **options, &block)
+          layout theme_name, options, &block
+          @theme_path = theme_name && controller_path || nil
+          @theme_name = theme_name || nil
+        end
+
+        # @!attribute [r] theme_name
         # @return [String, nil] theme name
+        def theme_name
+          defined?(@theme_name) && @theme_name || superclass.try(:theme_name)
+        end
 
         # @!attribute [r] theme
         # @example Once theme is set, the metadata will be set as well:
@@ -46,6 +60,7 @@ module Wallaby
         #     self.theme_name = 'secure'
         #
         #     self.theme
+        #
         #     # =>
         #     # {
         #     #   theme_name: 'secure',
@@ -53,25 +68,6 @@ module Wallaby
         #     # }
         #   end
         # @return [Hash] theme metadata
-
-        # @!attribute [r] themes
-        # @return [Array<Hash>] a list of {.theme} metadata
-      end
-
-      class_methods do
-        # (see .theme_name)
-        def theme_name=(theme_name, **options, &block)
-          layout theme_name, options, &block
-          @theme_path = theme_name && controller_path || nil
-          @theme_name = theme_name || nil
-        end
-
-        # (see .theme_name)
-        def theme_name
-          defined?(@theme_name) && @theme_name || superclass.try(:theme_name)
-        end
-
-        # (see .theme)
         def theme
           defined?(@theme_name) && @theme_name && {
             theme_name: @theme_name,
@@ -79,7 +75,8 @@ module Wallaby
           } || superclass.try(:theme)
         end
 
-        # (see .themes)
+        # @!attribute [r] themes
+        # @return [Array<Hash>] a list of {#theme} metadata
         def themes
           list = superclass.try(:themes) || []
           list.prepend theme if defined?(@theme_name) && @theme_name

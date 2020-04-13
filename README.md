@@ -7,11 +7,14 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d3e924dd70cc12562eab/test_coverage)](https://codeclimate.com/github/wallaby-rails/wallaby-view/test_coverage)
 [![Inch CI](https://inch-ci.org/github/wallaby-rails/wallaby-view.svg?branch=master)](https://inch-ci.org/github/wallaby-rails/wallaby-view)
 
-`Wallaby::View` is a Ruby gem that extends Rails layout/template/partial inheritance chain to allow searching layout/template/partial using theme name and action name.
+**Wallaby::View** extends Rails template/partial inheritance chain to be able to:
+
+- organize partials in `#{controller_path}/#{action}` fashion on top of Rails' controller fashion by extending Rails' [\_prefixes](https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90).
+- configure the theme (a set of layout/templates/partials starting with the theme prefix).
 
 ## Install
 
-Add `Wallaby::View` to `Gemfile`.
+Add **Wallaby::View** to `Gemfile`.
 
 ```ruby
 gem 'wallaby-view'
@@ -23,7 +26,7 @@ And re-bundle.
 bundle install
 ```
 
-Include `Wallaby::View` in the target controller (e.g. `ApplicationController`):
+Include **Wallaby::View** in the controller (e.g. **ApplicationController**):
 
 ```ruby
 # app/controllers/application_controller
@@ -43,7 +46,7 @@ class ApplicationController < ActionController::Base
 end
 
 # app/controllers/admin/application_controller
-class Admin::ApplicationController < ApplicationController
+class Admin::ApplicationController < ::ApplicationController
   self.theme_name = 'secure'
 end
 
@@ -54,7 +57,7 @@ class Admin::UsersController < Admin::ApplicationController
 end
 ```
 
-By using `Wallaby::View`, the lookup folder order of `admin/application#edit` action becomes:
+By using **Wallaby::View**, a template/partial for the `admin/application#edit` action will be looked up in the following folder order from top to bottom:
 
 - app/views/admin/application/edit
 - app/views/admin/application
@@ -63,18 +66,22 @@ By using `Wallaby::View`, the lookup folder order of `admin/application#edit` ac
 - app/views/application/edit
 - app/views/application
 
-Then it is possible to create a relative partial in one of the above folder for `admin/application#edit` action, for instance:
+Then it depends on how a relative partial should be shared, the partial can be created in one of the above folders.
+For example, if a `form` partial is designed specifically for `admin/application#edit` action, then it can be created in `admin/application/edit` folder as below:
+
+```erb
+<%# app/views/admin/application/edit/_form.html.erb %>
+a form for `admin/application#edit`
+```
+
+Then in the `admin/application#edit` template, rendering the relative `form` partial will result in using the above partial.
 
 ```erb
 <%# app/views/admin/application/edit.html.erb %>
 <% render 'form' %>
-
-<%# app/views/secure/edit/_form.html.erb %>
-This form partial is under `secure` theme and `edit` action,
-but still can be rendered by `admin/application#edit` action
 ```
 
-For `admin/users#edit` action, since `mapping_actions` option is set, `edit` will be mapped to `form`.
+For `admin/users#edit` action, since `mapping_actions` option is set, `edit` will be mapped to `form`, and `form` will be added to the prefixes as well.
 Therefore, the lookup folder order of `admin/users#edit` becomes:
 
 - app/views/admin/users/edit
@@ -95,7 +102,7 @@ Therefore, the lookup folder order of `admin/users#edit` becomes:
 
 ## Advanced Usage
 
-It is possible to override the `_prefixes` method to make more changes to the prefixes:
+It is possible to override the `_prefixes` method to make more changes to the prefixes before suffixing them with the action name:
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -109,13 +116,12 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-Then the lookup folder order of `application#edit` becomes:
+Then the lookup folder order of e.g. `application#edit` becomes:
 
 - app/views/application/edit
 - app/views/application
 - app/views/last_resort/edit
 - app/views/last_resort
-
 
 ## Documentation
 
