@@ -10,6 +10,12 @@ Continously to work on the rendering performance.
 
 ## [Unreleased]
 
+## [0.1.5](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.5) - 2020-04-13
+
+### Changed
+
+- chore: refactor class_methods to ClassMethods ([#9](https://github.com/wallaby-rails/wallaby-view/pull/9))
+
 ## [0.1.4](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.4) - 2020-02-28
 
 ### Removed
