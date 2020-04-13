@@ -9,15 +9,18 @@ module Wallaby
       # @return [Array<String>]
       # @see Wallaby::View::ActionViewable#_prefixes
       attr_reader :prefixes
+
       # @!attribute [r] action_name
       # Action name to be added
       # @return [String]
       attr_reader :action_name
+
       # @!attribute [r] themes
       # Themes to be inserted
       # @return [Array<Hash>]
       # @see Wallaby::View::Themeable#.themes
       attr_reader :themes
+
       # @!attribute [r] options
       # Options for extending the given prefixes
       # @return [Hash]
@@ -28,6 +31,7 @@ module Wallaby
       #   Wallaby::View::CustomPrefixes.execute(
       #     prefixes: ['users', 'application'], action_name: 'index'
       #   )
+      #
       #   # => [
       #   #   'users/index',
       #   #   'users',
@@ -39,6 +43,7 @@ module Wallaby
       #     prefixes: ['users', 'application'], action_name: 'index',
       #     themes: [{ theme_name: 'secure', theme_path: 'users' }]
       #   )
+      #
       #   # => [
       #   #   'users/index',
       #   #   'users',
@@ -52,6 +57,7 @@ module Wallaby
       #     prefixes: ['users', 'application'], action_name: 'edit',
       #     options: { mapping_actions: { 'edit' => 'form' } }
       #   )
+      #
       #   # => [
       #   #   'users/form',
       #   #   'users',
@@ -94,8 +100,10 @@ module Wallaby
         end
       end
 
-      private
+      protected
 
+      # @yield [array] To allow the array to be further modified
+      # @yieldparam [Array<String>] array
       # @return [Array<String>]
       def new_prefixes
         prefixes.dup.try do |array|
@@ -105,20 +113,18 @@ module Wallaby
           # in {Wallaby::View::ActionViewable#override_prefixes}
           new_array = yield array if block_given?
 
-          # If the above block doesn't return an array,
-          # it's assumed that `array` is changed
+          # If the above block doesn't return a new array, it returns the old `array`.
           new_array.is_a?(Array) ? new_array : array
         end
       end
 
-      # Action name actions
-      # @return [Array<String>]
+      # @return [Array<String>] Action names
       def actions
         @actions ||= [action_name, mapped_action_name].compact
       end
 
-      # Insert theme name into the prefixes
-      # @param [Array] array
+      # Insert theme names into the prefixes
+      # @param [Array<String>] array
       def insert_themes_into(array)
         themes.each do |theme|
           index = array.index theme[:theme_path]

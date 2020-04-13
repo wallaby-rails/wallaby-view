@@ -11,34 +11,17 @@ require 'wallaby/view/custom_prefixes'
 
 module Wallaby # :nodoc:
   # To extend Rails prefixes and improve lookup performance.
+  #
+  # For example, include {Wallaby::View} module in the controller:
+  #
+  # ```
+  # # app/controllers/application_controller
+  # class ApplicationController < ActionController::Base
+  #   include Wallaby::View
+  # end
+  # ```
   module View
     extend ActiveSupport::Concern
-
-    # This is the method executed when this module is included by other modules.
-    #
-    # Basically, it renames the methods so that it is possible
-    # to access the original methods after overriding them:
-    #
-    # 1. Rename the following original methods:
-    #
-    #     - rename {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L97
-    #       lookup_context} to {Wallaby::View::ActionViewable#original_lookup_context original_lookup_context}
-    #     - rename {https://github.com/rails/rails/blob/master/actionview/lib/action_view/view_paths.rb#L90 _prefixes}
-    #       to {Wallaby::View::ActionViewable#original_prefixes original_prefixes}
-    #
-    # 2. Override the original methods:
-    #
-    #     - rename {Wallaby::View::ActionViewable#override_lookup_context override_lookup_context}
-    #       to {Wallaby::View::ActionViewable#lookup_context lookup_context}
-    #     - rename {Wallaby::View::ActionViewable#override_prefixes override_prefixes}
-    #       to {Wallaby::View::ActionViewable#\_prefixes \_prefixes}
-    # @param mod [Module]
-    def self.included(mod)
-      mod.send :alias_method, :original_lookup_context, :lookup_context
-      mod.send :alias_method, :original_prefixes, :_prefixes
-      mod.send :alias_method, :lookup_context, :override_lookup_context
-      mod.send :alias_method, :_prefixes, :override_prefixes
-    end
 
     COMMA = ',' # :nodoc:
     EMPTY_STRING = '' # :nodoc:
@@ -49,5 +32,14 @@ module Wallaby # :nodoc:
 
     include ActionViewable
     include Themeable
+
+    included do
+      # NOTE: Basically, it renames the methods so that it is possible
+      # to access the original methods after overriding them:
+      alias_method :original_lookup_context, :lookup_context
+      alias_method :original_prefixes, :_prefixes
+      alias_method :lookup_context, :override_lookup_context
+      alias_method :_prefixes, :override_prefixes
+    end
   end
 end
