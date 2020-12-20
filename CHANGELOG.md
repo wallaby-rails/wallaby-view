@@ -12,7 +12,7 @@ Continously to work on the rendering performance.
 
 ### Changed
 
-- chore: remove PartialRenderer and support Rails 6.1 ([#10](https://github.com/wallaby-rails/wallaby-view/pull/10))
+- chore: remove PartialRenderer and support Rails 6.1 ([#11](https://github.com/wallaby-rails/wallaby-view/pull/11))
 
 ## [0.1.5](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.5) - 2020-04-13
 

@@ -1,6 +1,6 @@
 module Admin
   class CustomsController < Admin::UsersController
-    self.prefix_options = { mapping_actions: { prefixes: 'form' } }
+    self.prefix_options = { mapping_actions: { prefixes: ['form'] } }
 
     def _prefixes
       super do |prefixes|

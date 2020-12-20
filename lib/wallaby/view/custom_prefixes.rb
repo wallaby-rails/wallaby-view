@@ -120,7 +120,7 @@ module Wallaby
 
       # @return [Array<String>] Action names
       def actions
-        @actions ||= [action_name, **mapped_action_name].compact
+        @actions ||= [action_name, *mapped_action_name].compact
       end
 
       # Insert theme names into the prefixes
@@ -135,7 +135,7 @@ module Wallaby
       # Map the {#action_name} using `options[:mapping_actions]`
       # @return [Array<String>] mapped action name
       def mapped_action_name
-        Array(options[:mapping_actions].try(:[], action_name)).compact
+        Array(options[:mapping_actions].try(:[], action_name))
       end
     end
   end
