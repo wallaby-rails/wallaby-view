@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'request_store'
-require 'action_view/partial_renderer'
-
 require 'wallaby/view/version'
 require 'wallaby/view/action_viewable'
 require 'wallaby/view/themeable'

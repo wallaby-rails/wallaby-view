@@ -7,7 +7,7 @@ module Wallaby
       # @!attribute [r] prefixes
       # Base prefixes to extend
       # @return [Array<String>]
-      # @see Wallaby::View::ActionViewable#_prefixes
+      # @see ActionViewable#_prefixes
       attr_reader :prefixes
 
       # @!attribute [r] action_name
@@ -18,7 +18,7 @@ module Wallaby
       # @!attribute [r] themes
       # Themes to be inserted
       # @return [Array<Hash>]
-      # @see Wallaby::View::Themeable#.themes
+      # @see Themeable#.themes
       attr_reader :themes
 
       # @!attribute [r] options
@@ -110,7 +110,7 @@ module Wallaby
           insert_themes_into array
 
           # Be able to change the array in overriding methods
-          # in {Wallaby::View::ActionViewable#override_prefixes}
+          # in {ActionViewable#override_prefixes}
           new_array = yield array if block_given?
 
           # If the above block doesn't return a new array, it returns the old `array`.
@@ -120,7 +120,7 @@ module Wallaby
 
       # @return [Array<String>] Action names
       def actions
-        @actions ||= [action_name, mapped_action_name].compact
+        @actions ||= [action_name, **mapped_action_name].compact
       end
 
       # Insert theme names into the prefixes
@@ -133,9 +133,9 @@ module Wallaby
       end
 
       # Map the {#action_name} using `options[:mapping_actions]`
-      # @return [String, nil] mapped action name
+      # @return [Array<String>] mapped action name
       def mapped_action_name
-        options[:mapping_actions].try(:[], action_name)
+        Array(options[:mapping_actions].try(:[], action_name)).compact
       end
     end
   end

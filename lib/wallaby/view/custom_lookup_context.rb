@@ -4,11 +4,11 @@ module Wallaby
   module View
     # Custom lookup context to cache lookup results.
     class CustomLookupContext < ::ActionView::LookupContext
-      # Convert an ActionView::LookupContext instance into {Wallaby::View::CustomLookupContext}
+      # Convert an ActionView::LookupContext instance into {CustomLookupContext}
       # @param lookup_context [ActionView::LookupContext]
       # @param details [Hash]
       # @param prefixes [Array<String>]
-      # @return [Wallaby::View::CustomLookupContext]
+      # @return [CustomLookupContext]
       def self.convert(lookup_context, details: nil, prefixes: nil)
         return lookup_context if lookup_context.is_a? self
 
