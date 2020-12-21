@@ -30,9 +30,13 @@ Gem::Specification.new do |spec|
   ]
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'railties', '>= 4.2.0'
-  spec.add_dependency 'request_store'
+  spec.add_dependency 'railties', '>= 4.2.0', '<= 6.2.0'
 
+  spec.add_development_dependency 'github-markup'
   spec.add_development_dependency 'minitest-rails'
+  spec.add_development_dependency 'redcarpet'
+  spec.add_development_dependency 'simplecov'
+  spec.add_development_dependency 'sqlite3'
   spec.add_development_dependency 'wallaby-cop'
+  spec.add_development_dependency 'yard'
 end

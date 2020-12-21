@@ -2,6 +2,6 @@
 
 module Wallaby
   module View
-    VERSION = '0.1.5' # :nodoc:
+    VERSION = '0.1.6' # :nodoc:
   end
 end
