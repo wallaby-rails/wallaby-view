@@ -15,7 +15,14 @@ module Wallaby
         # It stores the options for {#_prefixes #_prefixes}. It can inherit options from superclass.
         # @return [Hash] prefix options
         def prefix_options
-          @prefix_options ||= superclass.try(:prefix_options) || {}
+          @prefix_options ||= superclass.try(:prefix_options).try(:dup) || {}
+        end
+
+        # Add prefix options
+        # @param new_options [Hash]
+        # @return [Hash] merged prefix options
+        def merge_prefix_options(new_options)
+          prefix_options.merge!(new_options)
         end
       end
 

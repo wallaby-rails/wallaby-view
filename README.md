@@ -53,7 +53,7 @@ end
 # app/controllers/admin/users_controller
 class Admin::UsersController < Admin::ApplicationController
   self.theme_name = 'account'
-  self.prefix_options = { mapping_actions: { edit: 'form' } }
+  self.prefix_options = { edit: 'form' }
 end
 ```
 
@@ -81,7 +81,7 @@ Then in the `admin/application#edit` template, rendering the relative `form` par
 <% render 'form' %>
 ```
 
-For `admin/users#edit` action, since `mapping_actions` option is set, `edit` will be mapped to `form`, and `form` will be added to the prefixes as well.
+For `admin/users#edit` action, since `prefix_options` option is set, `edit` will be mapped to `form`, and `form` will be added to the prefixes as well.
 Therefore, the lookup folder order of `admin/users#edit` becomes:
 
 - app/views/admin/users/edit

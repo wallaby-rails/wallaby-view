@@ -12,10 +12,17 @@ Rails.application.routes.draw do
 
     resource :custom, only: [] do
       get 'prefixes'
+      get 'prefix_options'
     end
 
     resource :custom_child, only: [] do
       get 'prefixes'
+      get 'prefix_options'
+    end
+
+    resource :custom_grand_child, only: [] do
+      get 'prefixes'
+      get 'prefix_options'
     end
   end
 

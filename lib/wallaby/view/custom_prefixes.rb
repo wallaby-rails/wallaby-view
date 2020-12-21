@@ -55,7 +55,7 @@ module Wallaby
       # @example To extend given prefixes with mapped action:
       #   Wallaby::View::CustomPrefixes.execute(
       #     prefixes: ['users', 'application'], action_name: 'edit',
-      #     options: { mapping_actions: { 'edit' => 'form' } }
+      #     options: { 'edit' => 'form' }
       #   )
       #
       #   # => [
@@ -135,7 +135,7 @@ module Wallaby
       # Map the {#action_name} using `options[:mapping_actions]`
       # @return [Array<String>] mapped action name
       def mapped_action_name
-        Array(options[:mapping_actions].try(:[], action_name))
+        Array((options[:mapping_actions] || options).try(:[], action_name))
       end
     end
   end
