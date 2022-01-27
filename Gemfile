@@ -10,7 +10,7 @@ ruby '2.7.1'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 7.0.0'
 
 gem 'better_errors'
 gem 'byebug'
@@ -19,8 +19,8 @@ gem 'deep-cover'
 # gem 'rack-mini-profiler'
 # gem 'ruby-prof'
 # gem 'simplecov', '~> 0.17.0'
-gem 'sqlite3'
+# gem 'sqlite3'
 # gem 'sqlite3', '< 1.4.0'
 # gem 'stackprof'
 gem 'wallaby-cop', path: '../wallaby-cop'
-# gem 'wallaby-cop', git: 'git@github.com:wallaby-rails/wallaby-cop.git'
+# gem 'wallaby-cop', git: 'git@github.com:wallaby-rails/wallaby-cop.git', branch: 'main'

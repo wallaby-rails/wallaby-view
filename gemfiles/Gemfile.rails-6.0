@@ -10,4 +10,4 @@ gemspec path: '../'
 
 gem 'rails', '~> 6.0.0'
 
-gem 'wallaby-cop', git: 'https://github.com/wallaby-rails/wallaby-cop.git', branch: 'master'
+gem 'wallaby-cop', git: 'https://github.com/wallaby-rails/wallaby-cop.git', branch: 'main'

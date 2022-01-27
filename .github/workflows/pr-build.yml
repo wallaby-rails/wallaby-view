@@ -1,0 +1,39 @@
+name: pr-build
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+jobs:
+  pr-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        # NOTE: check the versions that Ruby supports at https://www.ruby-lang.org/en/downloads/branches/
+        ruby: ['2.7', '3.0']
+        # NOTE: check the versions that Rails supports at https://guides.rubyonrails.org/maintenance_policy.html
+        rails: ['7.0', '6.1', '6.0']
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/Gemfile.rails-${{ matrix.rails }}
+      RAILS_ENV: test
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Rubocop Check
+        run: bundle exec rubocop
+
+      - name: Minitest
+        run: |
+          if [ "$GITHUB_REF_NAME" = "master" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+          if [ "$GITHUB_REF_NAME" = "master" ]; then chmod +x ./cc-test-reporter; fi
+          if [ "$GITHUB_REF_NAME" = "master" ]; then ./cc-test-reporter before-build; fi
+          bundle exec rake --trace test
+          if [ "$GITHUB_REF_NAME" = "master" ]; then ./cc-test-reporter after-build -r ${{secrets.CC_TEST_REPORTER_ID}}; fi
