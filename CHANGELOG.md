@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Continously to work on the rendering performance.
 
+## [0.1.7](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.7) - 2021-01-27
+
+### Changed
+
+- Allow Rails 7 ([#12](https://github.com/wallaby-rails/wallaby-view/pull/12))
+- chore: change to use github actions instead of travis ([#13](https://github.com/wallaby-rails/wallaby-view/pull/13))
+
 ## [0.1.6](https://github.com/wallaby-rails/wallaby-view/releases/tag/0.1.6) - 2020-12-20
 
 ### Changed
