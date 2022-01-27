@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/wallaby-rails/wallaby-view'
 
   spec.metadata = {
+    'rubygems_mfa_required' => 'true',
     'homepage_uri' => spec.homepage,
     'source_code_uri' => spec.homepage,
     'changelog_uri' => "#{spec.homepage}/blob/master/CHANGELOG.md"
@@ -33,7 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'railties', '>= 4.2.0'
 
   spec.add_development_dependency 'github-markup'
-  spec.add_development_dependency 'minitest-rails'
   spec.add_development_dependency 'redcarpet'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'sqlite3'
