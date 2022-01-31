@@ -17,6 +17,7 @@ jobs:
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/Gemfile.rails-${{ matrix.rails }}
       RAILS_ENV: test
+      CC_TEST_REPORTER_ID: 9ddd85ddd2d59e4eddd860b45d5416283463d27ef531ef901051c2960697208b
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -32,8 +33,8 @@ jobs:
 
       - name: Minitest
         run: |
-          if [ "$GITHUB_REF_NAME" = "master" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
-          if [ "$GITHUB_REF_NAME" = "master" ]; then chmod +x ./cc-test-reporter; fi
-          if [ "$GITHUB_REF_NAME" = "master" ]; then ./cc-test-reporter before-build; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then chmod +x ./cc-test-reporter; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter before-build; fi
           bundle exec rake --trace test
-          if [ "$GITHUB_REF_NAME" = "master" ]; then ./cc-test-reporter after-build -r ${{secrets.CC_TEST_REPORTER_ID}}; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter after-build -r ${{secrets.CC_TEST_REPORTER_ID}}; fi
