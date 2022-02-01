@@ -37,4 +37,4 @@ jobs:
           if [ "$GITHUB_REF_NAME" = "main" ]; then chmod +x ./cc-test-reporter; fi
           if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter before-build; fi
           bundle exec rake --trace test
-          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter after-build -r ${{secrets.CC_TEST_REPORTER_ID}}; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter after-build -r ${{env.CC_TEST_REPORTER_ID}}; fi
