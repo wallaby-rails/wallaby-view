@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   namespace :admin, only: [] do
     get 'prefixes', to: 'application#prefixes'

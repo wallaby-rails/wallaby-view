@@ -44,14 +44,14 @@ module Wallaby
         #   layout} method
         def theme_name=(theme_name, **options, &block)
           layout theme_name, options, &block
-          @theme_path = theme_name && controller_path || nil
+          @theme_path = (theme_name && controller_path) || nil
           @theme_name = theme_name || nil
         end
 
         # @!attribute [r] theme_name
         # @return [String, nil] theme name
         def theme_name
-          defined?(@theme_name) && @theme_name || superclass.try(:theme_name)
+          (defined?(@theme_name) && @theme_name) || superclass.try(:theme_name)
         end
 
         # @!attribute [r] theme
@@ -69,10 +69,10 @@ module Wallaby
         #   end
         # @return [Hash] theme metadata
         def theme
-          defined?(@theme_name) && @theme_name && {
+          (defined?(@theme_name) && @theme_name && {
             theme_name: @theme_name,
             theme_path: @theme_path
-          } || superclass.try(:theme)
+          }) || superclass.try(:theme)
         end
 
         # @!attribute [r] themes
