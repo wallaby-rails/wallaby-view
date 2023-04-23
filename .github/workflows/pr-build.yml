@@ -11,13 +11,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         # NOTE: check the versions that Ruby supports at https://www.ruby-lang.org/en/downloads/branches/
-        ruby: ['2.7', '3.0']
+        ruby: ['3.2', '3.1', '3.0', '2.7']
         # NOTE: check the versions that Rails supports at https://guides.rubyonrails.org/maintenance_policy.html
         rails: ['7.0', '6.1', '6.0']
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/Gemfile.rails-${{ matrix.rails }}
       RAILS_ENV: test
-      CC_TEST_REPORTER_ID: 9ddd85ddd2d59e4eddd860b45d5416283463d27ef531ef901051c2960697208b
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -37,4 +36,4 @@ jobs:
           if [ "$GITHUB_REF_NAME" = "main" ]; then chmod +x ./cc-test-reporter; fi
           if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter before-build; fi
           bundle exec rake --trace test
-          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter after-build -r ${{env.CC_TEST_REPORTER_ID}}; fi
+          if [ "$GITHUB_REF_NAME" = "main" ]; then ./cc-test-reporter after-build -r ${{ secrets.CC_TEST_REPORTER_ID }}; fi

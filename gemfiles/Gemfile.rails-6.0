@@ -11,3 +11,6 @@ gemspec path: '../'
 gem 'rails', '~> 6.0.0'
 
 gem 'wallaby-cop', git: 'https://github.com/wallaby-rails/wallaby-cop.git', branch: 'main'
+
+# @see https://stackoverflow.com/a/71192990
+gem 'psych', '< 4'
