@@ -14,7 +14,7 @@ module Wallaby
 
         new(
           lookup_context.view_paths,
-          details || lookup_context.instance_variable_get('@details'),
+          details || lookup_context.instance_variable_get(:@details),
           prefixes || lookup_context.prefixes
         )
       end
@@ -26,7 +26,7 @@ module Wallaby
       # @param partial [true, false]
       # @param args [Array] the rest of the arguments
       # @return [ActionView::Template]
-      alias original_find find
+      alias_method :original_find, :find
 
       # This is to resolve the performance bottleneck for template/partial lookup.
       #
@@ -44,7 +44,7 @@ module Wallaby
       # @!method find_template(path, prefixes, partial, *args)
       # This is an alias method of {#find}
       # (see #find)
-      alias find_template find
+      alias_method :find_template, :find
 
       protected
 

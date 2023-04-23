@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class CustomsController < Admin::UsersController
     self.prefix_options = { prefixes: ['form'] }

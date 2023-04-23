@@ -42,7 +42,7 @@ module Wallaby
 
       # (see #lookup_context)
       def override_lookup_context
-        @_lookup_context ||= # rubocop:disable Naming/MemoizedInstanceVariableName
+        @_lookup_context ||=
           CustomLookupContext.convert(original_lookup_context, prefixes: _prefixes)
       end
 
@@ -63,7 +63,7 @@ module Wallaby
         themes: nil,
         options: nil, &block
       )
-        @_prefixes ||= # rubocop:disable Naming/MemoizedInstanceVariableName
+        @_prefixes ||=
           CustomPrefixes.execute(
             prefixes: prefixes || original_prefixes,
             action_name: action_name || params[:action],

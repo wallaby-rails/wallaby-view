@@ -135,7 +135,7 @@ module Wallaby
       # Map the {#action_name} using `options[:mapping_actions]`
       # @return [Array<String>] mapped action name
       def mapped_action_name
-        Array((options[:mapping_actions] || options).try(:[], action_name))
+        Array.wrap((options[:mapping_actions] || options).try(:[], action_name))
       end
     end
   end
